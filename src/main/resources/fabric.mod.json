@@ -1,0 +1,33 @@
+{
+  "authors": [],
+  "contact": {
+    "repo": "https://github.com/TurtyWurty/FabricTechModTesting"
+  },
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  },
+  "description": "",
+  "entrypoints": {
+    "client": [
+      "dev.turtywurty.fabrictechmodtesting.client.FabricTechModTestingClient"
+    ],
+    "main": [
+      "dev.turtywurty.fabrictechmodtesting.FabricTechModTesting"
+    ],
+    "fabric-datagen": [
+      "dev.turtywurty.fabrictechmodtesting.data.FabricTechModTestingDataGenerator"
+    ]
+  },
+  "environment": "*",
+  "icon": "assets/fabrictechmodtesting/icon.png",
+  "id": "fabrictechmodtesting",
+  "license": "MIT",
+  "mixins": [
+    "fabrictechmodtesting.mixins.json"
+  ],
+  "name": "FabricTechModTesting",
+  "schemaVersion": 1,
+  "version": "${version}"
+}
