@@ -1,11 +1,14 @@
 package dev.turtywurty.fabrictechmodtesting.common.blockentity;
 
 import dev.turtywurty.fabrictechmodtesting.FabricTechModTesting;
-import dev.turtywurty.fabrictechmodtesting.common.blockentity.util.TickableBlockEntity;
+import dev.turtywurty.fabrictechmodtesting.common.blockentity.util.*;
 import dev.turtywurty.fabrictechmodtesting.common.menu.AlloyFurnaceMenu;
+import dev.turtywurty.fabrictechmodtesting.common.recipe.AlloyFurnaceRecipe;
 import dev.turtywurty.fabrictechmodtesting.core.init.BlockEntityTypeInit;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -15,27 +18,30 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class AlloyFurnaceBlockEntity extends BlockEntity implements TickableBlockEntity, ExtendedScreenHandlerFactory {
-    public static final Component TITLE = Component.translatable("container." + FabricTechModTesting.MOD_ID + ".alloy_furnace");
+import java.util.Optional;
 
+public class AlloyFurnaceBlockEntity extends UpdatableBlockEntity implements TickableBlockEntity, ExtendedScreenHandlerFactory {
+    public static final Component TITLE = Component.translatable("container." + FabricTechModTesting.MOD_ID + ".alloy_furnace");
     public static final int INPUT_SLOT_0 = 0, INPUT_SLOT_1 = 1, FUEL_SLOT = 2, OUTPUT_SLOT = 3;
 
-    private int progress, maxProgress, fuelProgress, maxFuelProgress;
+    private final WrappedContainerStorage<SimpleContainer> combinedStorage = new WrappedContainerStorage<>();
+    private final int maxFuelProgress = 200;
+    private int progress, maxProgress, fuelProgress;
     private final ContainerData containerData = new ContainerData() {
         @Override
         public int get(int index) {
@@ -54,7 +60,6 @@ public class AlloyFurnaceBlockEntity extends BlockEntity implements TickableBloc
                 case 0 -> AlloyFurnaceBlockEntity.this.progress = value;
                 case 1 -> AlloyFurnaceBlockEntity.this.maxProgress = value;
                 case 2 -> AlloyFurnaceBlockEntity.this.fuelProgress = value;
-                case 3 -> AlloyFurnaceBlockEntity.this.maxFuelProgress = value;
             }
         }
 
@@ -63,70 +68,23 @@ public class AlloyFurnaceBlockEntity extends BlockEntity implements TickableBloc
             return 4;
         }
     };
-
-    private final SimpleContainer inputSlot0 = new SimpleContainer(1) {
-        @Override
-        public void setChanged() {
-            super.setChanged();
-            AlloyFurnaceBlockEntity.this.update();
-        }
-    };
-
-    private final SimpleContainer inputSlot1 = new SimpleContainer(1) {
-        @Override
-        public void setChanged() {
-            super.setChanged();
-            AlloyFurnaceBlockEntity.this.update();
-        }
-    };
-
-    private final SimpleContainer fuelSlot = new SimpleContainer(1) {
-        @Override
-        public boolean canPlaceItem(int slot, ItemStack itemStack) {
-            return isFuel(itemStack);
-        }
-
-        @Override
-        public void setChanged() {
-            super.setChanged();
-            AlloyFurnaceBlockEntity.this.update();
-        }
-    };
-
-    private final SimpleContainer outputSlot = new SimpleContainer(1) {
-        @Override
-        public boolean canPlaceItem(int slot, ItemStack itemStack) {
-            return false;
-        }
-
-        @Override
-        public void setChanged() {
-            super.setChanged();
-            AlloyFurnaceBlockEntity.this.update();
-        }
-    };
-
-    private final InventoryStorage inputSlot0Wrapper = InventoryStorage.of(this.inputSlot0, Direction.EAST);
-    private final InventoryStorage inputSlot1Wrapper = InventoryStorage.of(this.inputSlot1, Direction.WEST);
-    private final InventoryStorage fuelSlotWrapper = InventoryStorage.of(this.fuelSlot, Direction.UP);
-    private final InventoryStorage outputSlotWrapper = InventoryStorage.of(this.outputSlot, Direction.DOWN);
-
-    public static InventoryStorage getProviderHandler(BlockEntity blockEntity, Direction direction) {
-        if (blockEntity instanceof AlloyFurnaceBlockEntity alloyFurnaceBlockEntity) {
-            return switch (direction) {
-                case EAST -> alloyFurnaceBlockEntity.inputSlot0Wrapper;
-                case WEST -> alloyFurnaceBlockEntity.inputSlot1Wrapper;
-                case UP -> alloyFurnaceBlockEntity.fuelSlotWrapper;
-                case DOWN -> alloyFurnaceBlockEntity.outputSlotWrapper;
-                default -> null;
-            };
-        }
-
-        return null;
-    }
+    private ResourceLocation currentRecipeId;
 
     public AlloyFurnaceBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(BlockEntityTypeInit.ALLOY_FURNACE, blockPos, blockState);
+
+        this.combinedStorage.addContainer(new SyncingSimpleContainer(this, 1), Direction.EAST);
+        this.combinedStorage.addContainer(new SyncingSimpleContainer(this, 1), Direction.WEST);
+        this.combinedStorage.addContainer(new PredicateSimpleContainer(this, (integer, itemStack) -> isFuel(itemStack), 1), Direction.UP);
+        this.combinedStorage.addContainer(new OutputSimpleContainer(this, 1), Direction.DOWN);
+    }
+
+    public static InventoryStorage getProviderHandler(BlockEntity blockEntity, Direction direction) {
+        if (blockEntity instanceof AlloyFurnaceBlockEntity alloyFurnaceBlockEntity) {
+            return alloyFurnaceBlockEntity.combinedStorage.getStorage(direction);
+        }
+
+        return null;
     }
 
     public static boolean isFuel(ItemStack stack) {
@@ -135,14 +93,94 @@ public class AlloyFurnaceBlockEntity extends BlockEntity implements TickableBloc
 
     @Override
     public void tick() {
+        if (this.level == null || this.level.isClientSide)
+            return;
 
+        if(this.fuelProgress > 0) {
+            if (this.fuelProgress++ >= this.maxFuelProgress) {
+                ItemStack fuelStack = this.combinedStorage.getContainer(FUEL_SLOT).getItem(0);
+                this.fuelProgress = 0;
+                if (isFuel(fuelStack)) {
+                    this.combinedStorage.getStorage(Direction.UP).extract(ItemVariant.of(fuelStack), 1, null);
+                    update();
+                }
+            }
+        }
+
+        if (this.currentRecipeId == null) {
+            Optional<RecipeHolder<AlloyFurnaceRecipe>> match = getCurrentRecipe();
+
+            if (match.isPresent()) {
+                RecipeHolder<AlloyFurnaceRecipe> recipeHolder = match.get();
+                this.currentRecipeId = recipeHolder.id();
+                this.maxProgress = recipeHolder.value().cookTime();
+                this.progress = 0;
+                update();
+            } else {
+                int progress = this.progress;
+                int maxProgress = this.maxProgress;
+                if (progress != 0 || maxProgress != 0) {
+                    reset();
+                }
+
+                return;
+            }
+        }
+
+        if (this.progress++ >= this.maxProgress) {
+            Optional<RecipeHolder<AlloyFurnaceRecipe>> match = this.level.getRecipeManager()
+                    .getAllRecipesFor(AlloyFurnaceRecipe.Type.INSTANCE)
+                    .stream()
+                    .filter(recipeHolder -> recipeHolder.id().equals(this.currentRecipeId))
+                    .findFirst();
+
+            if (match.isPresent()) {
+                RecipeHolder<AlloyFurnaceRecipe> recipeHolder = match.get();
+                AlloyFurnaceRecipe recipe = recipeHolder.value();
+
+                InventoryStorage output = this.combinedStorage.getStorage(Direction.DOWN);
+                InventoryStorage input0 = this.combinedStorage.getStorage(Direction.EAST);
+                InventoryStorage input1 = this.combinedStorage.getStorage(Direction.WEST);
+                try(Transaction transaction = Transaction.openOuter()) {
+                    output.insert(ItemVariant.of(recipe.output()), recipe.output().getCount(), transaction);
+                    try(Transaction transaction1 = Transaction.openNested(transaction)) {
+                        input0.extract(ItemVariant.of(this.combinedStorage.getContainer(INPUT_SLOT_0).getItem(0)), recipe.inputA().count(), transaction1);
+                        input1.extract(ItemVariant.of(this.combinedStorage.getContainer(INPUT_SLOT_1).getItem(0)), recipe.inputB().count(), transaction1);
+                        transaction1.commit();
+                    }
+
+                    transaction.commit();
+                }
+                reset();
+                return;
+            }
+
+            Optional<RecipeHolder<AlloyFurnaceRecipe>> newMatch = getCurrentRecipe();
+            if (newMatch.isPresent()) {
+                RecipeHolder<AlloyFurnaceRecipe> recipeHolder = newMatch.get();
+                this.currentRecipeId = recipeHolder.id();
+                this.maxProgress = recipeHolder.value().cookTime();
+                update();
+                return;
+            }
+
+            reset();
+        }
     }
 
-    public void update() {
-        setChanged();
-        if (this.level != null) {
-            this.level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL);
-        }
+    private void reset() {
+        this.currentRecipeId = null;
+        this.progress = 0;
+        this.maxProgress = 0;
+        update();
+    }
+
+    private Optional<RecipeHolder<AlloyFurnaceRecipe>> getCurrentRecipe() {
+        if (this.level == null || this.level.isClientSide)
+            return Optional.empty();
+
+        var inventory = new SimpleContainer(this.combinedStorage.getStacks().toArray(new ItemStack[0]));
+        return this.level.getRecipeManager().getRecipeFor(AlloyFurnaceRecipe.Type.INSTANCE, inventory, this.level);
     }
 
     @Override
@@ -153,22 +191,8 @@ public class AlloyFurnaceBlockEntity extends BlockEntity implements TickableBloc
         modidData.putInt("Progress", this.progress);
         modidData.putInt("MaxProgress", this.maxProgress);
         modidData.putInt("FuelProgress", this.fuelProgress);
-        modidData.putInt("MaxFuelProgress", this.maxFuelProgress);
-
-        var inventoryData = new CompoundTag();
-        var slot0Tag = new CompoundTag();
-        ContainerHelper.saveAllItems(slot0Tag, this.inputSlot0.getItems());
-        inventoryData.put("InputSlot0", slot0Tag);
-        var slot1Tag = new CompoundTag();
-        ContainerHelper.saveAllItems(slot1Tag, this.inputSlot1.getItems());
-        inventoryData.put("InputSlot1", slot1Tag);
-        var fuelTag = new CompoundTag();
-        ContainerHelper.saveAllItems(fuelTag, this.fuelSlot.getItems());
-        inventoryData.put("FuelSlot", fuelTag);
-        var outputTag = new CompoundTag();
-        ContainerHelper.saveAllItems(outputTag, this.outputSlot.getItems());
-        inventoryData.put("OutputSlot", outputTag);
-        modidData.put("Inventory", inventoryData);
+        modidData.putString("CurrentRecipe", this.currentRecipeId == null ? "" : this.currentRecipeId.toString());
+        modidData.put("Inventory", this.combinedStorage.writeNBT());
 
         compoundTag.put(FabricTechModTesting.MOD_ID, modidData);
     }
@@ -190,36 +214,13 @@ public class AlloyFurnaceBlockEntity extends BlockEntity implements TickableBloc
         if (modidData.contains("FuelProgress", Tag.TAG_INT))
             this.fuelProgress = modidData.getInt("FuelProgress");
 
-        if (modidData.contains("MaxFuelProgress", Tag.TAG_INT))
-            this.maxFuelProgress = modidData.getInt("MaxFuelProgress");
-
-        if (modidData.contains("Inventory", Tag.TAG_COMPOUND)) {
-            CompoundTag inventoryData = modidData.getCompound("Inventory");
-
-            if (inventoryData.contains("InputSlot0", Tag.TAG_COMPOUND)) {
-                CompoundTag slot0Tag = inventoryData.getCompound("InputSlot0");
-                this.inputSlot0.clearContent();
-                ContainerHelper.loadAllItems(slot0Tag, this.inputSlot0.getItems());
-            }
-
-            if (inventoryData.contains("InputSlot1", Tag.TAG_COMPOUND)) {
-                CompoundTag slot1Tag = inventoryData.getCompound("InputSlot1");
-                this.inputSlot1.clearContent();
-                ContainerHelper.loadAllItems(slot1Tag, this.inputSlot1.getItems());
-            }
-
-            if (inventoryData.contains("FuelSlot", Tag.TAG_COMPOUND)) {
-                CompoundTag fuelTag = inventoryData.getCompound("FuelSlot");
-                this.fuelSlot.clearContent();
-                ContainerHelper.loadAllItems(fuelTag, this.fuelSlot.getItems());
-            }
-
-            if (inventoryData.contains("OutputSlot", Tag.TAG_COMPOUND)) {
-                CompoundTag outputTag = inventoryData.getCompound("OutputSlot");
-                this.outputSlot.clearContent();
-                ContainerHelper.loadAllItems(outputTag, this.outputSlot.getItems());
-            }
+        if (modidData.contains("CurrentRecipe", Tag.TAG_STRING)) {
+            String currentRecipe = modidData.getString("CurrentRecipe");
+            this.currentRecipeId = currentRecipe.isEmpty() ? null : ResourceLocation.tryParse(currentRecipe);
         }
+
+        if (modidData.contains("Inventory", Tag.TAG_LIST))
+            this.combinedStorage.readNBT(modidData.getList("Inventory", Tag.TAG_COMPOUND));
     }
 
     @Nullable
@@ -246,20 +247,8 @@ public class AlloyFurnaceBlockEntity extends BlockEntity implements TickableBloc
         return new AlloyFurnaceMenu(id, inventory, this, this.containerData);
     }
 
-    public SimpleContainer getInputSlot0() {
-        return this.inputSlot0;
-    }
-
-    public SimpleContainer getInputSlot1() {
-        return this.inputSlot1;
-    }
-
-    public SimpleContainer getFuelSlot() {
-        return this.fuelSlot;
-    }
-
-    public SimpleContainer getOutputSlot() {
-        return this.outputSlot;
+    public WrappedContainerStorage<SimpleContainer> getCombinedStorage() {
+        return this.combinedStorage;
     }
 
     @Override

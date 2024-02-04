@@ -3,11 +3,8 @@ package dev.turtywurty.fabrictechmodtesting.common.block;
 import dev.turtywurty.fabrictechmodtesting.common.blockentity.AlloyFurnaceBlockEntity;
 import dev.turtywurty.fabrictechmodtesting.common.blockentity.util.TickableBlockEntity;
 import dev.turtywurty.fabrictechmodtesting.core.init.BlockEntityTypeInit;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -53,10 +50,7 @@ public class AlloyFurnaceBlock extends Block implements EntityBlock {
         if (state.getBlock() != newState.getBlock()) {
             BlockEntity be = level.getBlockEntity(pos);
             if (be instanceof AlloyFurnaceBlockEntity blockEntity) {
-                Containers.dropContents(level, pos, blockEntity.getInputSlot0());
-                Containers.dropContents(level, pos, blockEntity.getInputSlot1());
-                Containers.dropContents(level, pos, blockEntity.getFuelSlot());
-                Containers.dropContents(level, pos, blockEntity.getOutputSlot());
+                blockEntity.getCombinedStorage().dropContents(level, pos);
                 level.updateNeighbourForOutputSignal(pos, this);
             }
         }

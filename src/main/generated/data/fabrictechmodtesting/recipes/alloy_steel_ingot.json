@@ -1,0 +1,20 @@
+{
+  "type": "fabrictechmodtesting:alloy_furnace",
+  "cook_time": 200,
+  "inputA": {
+    "count": 8,
+    "ingredient": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "inputB": {
+    "count": 1,
+    "ingredient": {
+      "item": "minecraft:coal"
+    }
+  },
+  "output": {
+    "Count": 2,
+    "id": "fabrictechmodtesting:steel_ingot"
+  }
+}

@@ -24,10 +24,10 @@ public class AlloyFurnaceScreen extends AbstractContainerScreen<AlloyFurnaceMenu
         guiGraphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
 
         float progress = this.menu.getProgressPercent();
-        float fuelProgress = this.menu.getFuelProgressPercent();
-
         guiGraphics.blit(TEXTURE, this.leftPos + 79, this.topPos + 34, 176, 14, (int) (progress * 24), 17);
-        guiGraphics.blit(TEXTURE, this.leftPos + 56, this.topPos + 36 + (16 - (int) (fuelProgress * 16)), 176, 31 + (16 - (int) (fuelProgress * 16)), 14, (int) (fuelProgress * 16));
+
+        float fuelProgress = this.menu.getFuelProgressPercent();
+        guiGraphics.blit(TEXTURE, this.leftPos + 56, this.topPos + 36 + (int) ((1 - fuelProgress) * 14), 176, 31 + (int) ((1 - fuelProgress) * 14), 14, (int) (fuelProgress * 14));
     }
 
     @Override

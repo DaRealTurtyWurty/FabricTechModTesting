@@ -1,11 +1,12 @@
 package dev.turtywurty.fabrictechmodtesting.common.menu;
 
 import dev.turtywurty.fabrictechmodtesting.common.blockentity.AlloyFurnaceBlockEntity;
+import dev.turtywurty.fabrictechmodtesting.common.blockentity.util.WrappedContainerStorage;
 import dev.turtywurty.fabrictechmodtesting.core.init.BlockInit;
 import dev.turtywurty.fabrictechmodtesting.core.init.MenuTypeInit;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
-import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
@@ -27,41 +28,32 @@ public class AlloyFurnaceMenu extends AbstractContainerMenu {
         if (!(blockEntity instanceof AlloyFurnaceBlockEntity alloyFurnaceBlockEntity))
             throw new IllegalArgumentException("Block entity is not an instance of AlloyFurnaceBlockEntity!");
 
-        Container inputSlot0 = alloyFurnaceBlockEntity.getInputSlot0();
-        Container inputSlot1 = alloyFurnaceBlockEntity.getInputSlot1();
-        Container fuelSlot = alloyFurnaceBlockEntity.getFuelSlot();
-        Container outputSlot = alloyFurnaceBlockEntity.getOutputSlot();
-        checkContainerSize(inputSlot0, 1);
-        checkContainerSize(inputSlot1, 1);
-        checkContainerSize(fuelSlot, 1);
-        checkContainerSize(outputSlot, 1);
+        WrappedContainerStorage<SimpleContainer> wrappedContainerStorage = alloyFurnaceBlockEntity.getCombinedStorage();
+        wrappedContainerStorage.checkSize(4);
         checkContainerDataCount(data, 4);
 
-        inputSlot0.startOpen(playerInv.player);
-        inputSlot1.startOpen(playerInv.player);
-        fuelSlot.startOpen(playerInv.player);
-        outputSlot.startOpen(playerInv.player);
+        wrappedContainerStorage.startOpen(playerInv.player);
 
         this.blockEntity = alloyFurnaceBlockEntity;
         this.levelAccess = ContainerLevelAccess.create(this.blockEntity.getLevel(), this.blockEntity.getBlockPos());
         this.data = data;
 
-        addOurSlots(inputSlot0, inputSlot1, fuelSlot, outputSlot);
+        addOurSlots(wrappedContainerStorage);
         addPlayerSlots(playerInv);
 
         addDataSlots(data);
     }
 
-    private void addOurSlots(Container inputSlot0, Container inputSlot1, Container fuelSlot, Container outputSlot) {
-        addSlot(new Slot(inputSlot0, 0, 42, 17));
-        addSlot(new Slot(inputSlot1, 0, 70, 17));
-        addSlot(new Slot(fuelSlot, 0, 56, 53) {
+    private void addOurSlots(WrappedContainerStorage<SimpleContainer> wrappedContainerStorage) {
+        addSlot(new Slot(wrappedContainerStorage.getContainer(AlloyFurnaceBlockEntity.INPUT_SLOT_0), 0, 42, 17));
+        addSlot(new Slot(wrappedContainerStorage.getContainer(AlloyFurnaceBlockEntity.INPUT_SLOT_1), 0, 70, 17));
+        addSlot(new Slot(wrappedContainerStorage.getContainer(AlloyFurnaceBlockEntity.FUEL_SLOT), 0, 56, 53) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return this.container.canPlaceItem(0, stack);
             }
         });
-        addSlot(new Slot(outputSlot, 0, 116, 35) {
+        addSlot(new Slot(wrappedContainerStorage.getContainer(AlloyFurnaceBlockEntity.OUTPUT_SLOT), 0, 116, 35) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return this.container.canPlaceItem(0, stack);
@@ -117,10 +109,7 @@ public class AlloyFurnaceMenu extends AbstractContainerMenu {
     @Override
     public void removed(Player player) {
         super.removed(player);
-        this.blockEntity.getInputSlot0().stopOpen(player);
-        this.blockEntity.getInputSlot1().stopOpen(player);
-        this.blockEntity.getFuelSlot().stopOpen(player);
-        this.blockEntity.getOutputSlot().stopOpen(player);
+        this.blockEntity.getCombinedStorage().stopOpen(player);
     }
 
     @Override
@@ -147,7 +136,7 @@ public class AlloyFurnaceMenu extends AbstractContainerMenu {
     public float getProgressPercent() {
         float progress = getProgress();
         float maxProgress = getMaxProgress();
-        if (maxProgress == 0)
+        if (maxProgress == 0 || progress == 0)
             return 0.0F;
 
         return Mth.clamp(progress / maxProgress, 0.0F, 1.0F);
@@ -156,7 +145,7 @@ public class AlloyFurnaceMenu extends AbstractContainerMenu {
     public float getFuelProgressPercent() {
         float progress = getFuelProgress();
         float maxProgress = getMaxFuelProgress();
-        if (maxProgress == 0)
+        if (maxProgress == 0 || progress == 0)
             return 0.0F;
 
         return Mth.clamp(progress / maxProgress, 0.0F, 1.0F);
