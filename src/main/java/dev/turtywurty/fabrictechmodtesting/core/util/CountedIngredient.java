@@ -41,7 +41,7 @@ public record CountedIngredient(Ingredient ingredient, int count) implements Cus
 
     @Override
     public boolean test(ItemStack stack) {
-        return this.ingredient.test(stack) && stack.getCount() == this.count;
+        return this.ingredient.test(stack) && stack.getCount() >= this.count;
     }
 
     @Override

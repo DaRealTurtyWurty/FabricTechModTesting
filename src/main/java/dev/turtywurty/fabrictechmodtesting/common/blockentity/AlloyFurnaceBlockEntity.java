@@ -7,8 +7,6 @@ import dev.turtywurty.fabrictechmodtesting.common.recipe.AlloyFurnaceRecipe;
 import dev.turtywurty.fabrictechmodtesting.core.init.BlockEntityTypeInit;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -39,17 +37,18 @@ public class AlloyFurnaceBlockEntity extends UpdatableBlockEntity implements Tic
     public static final Component TITLE = Component.translatable("container." + FabricTechModTesting.MOD_ID + ".alloy_furnace");
     public static final int INPUT_SLOT_0 = 0, INPUT_SLOT_1 = 1, FUEL_SLOT = 2, OUTPUT_SLOT = 3;
 
+    private int progress, maxProgress, burnTime, maxBurnTime;
+    private ResourceLocation currentRecipeId;
+
     private final WrappedContainerStorage<SimpleContainer> combinedStorage = new WrappedContainerStorage<>();
-    private final int maxFuelProgress = 200;
-    private int progress, maxProgress, fuelProgress;
     private final ContainerData containerData = new ContainerData() {
         @Override
         public int get(int index) {
             return switch (index) {
                 case 0 -> AlloyFurnaceBlockEntity.this.progress;
                 case 1 -> AlloyFurnaceBlockEntity.this.maxProgress;
-                case 2 -> AlloyFurnaceBlockEntity.this.fuelProgress;
-                case 3 -> AlloyFurnaceBlockEntity.this.maxFuelProgress;
+                case 2 -> AlloyFurnaceBlockEntity.this.burnTime;
+                case 3 -> AlloyFurnaceBlockEntity.this.maxBurnTime;
                 default -> throw new UnsupportedOperationException("Unsupported container data index: " + index);
             };
         }
@@ -59,7 +58,8 @@ public class AlloyFurnaceBlockEntity extends UpdatableBlockEntity implements Tic
             switch (index) {
                 case 0 -> AlloyFurnaceBlockEntity.this.progress = value;
                 case 1 -> AlloyFurnaceBlockEntity.this.maxProgress = value;
-                case 2 -> AlloyFurnaceBlockEntity.this.fuelProgress = value;
+                case 2 -> AlloyFurnaceBlockEntity.this.burnTime = value;
+                case 3 -> AlloyFurnaceBlockEntity.this.maxBurnTime = value;
             }
         }
 
@@ -68,7 +68,6 @@ public class AlloyFurnaceBlockEntity extends UpdatableBlockEntity implements Tic
             return 4;
         }
     };
-    private ResourceLocation currentRecipeId;
 
     public AlloyFurnaceBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(BlockEntityTypeInit.ALLOY_FURNACE, blockPos, blockState);
@@ -96,76 +95,61 @@ public class AlloyFurnaceBlockEntity extends UpdatableBlockEntity implements Tic
         if (this.level == null || this.level.isClientSide)
             return;
 
-        if(this.fuelProgress > 0) {
-            if (this.fuelProgress++ >= this.maxFuelProgress) {
-                ItemStack fuelStack = this.combinedStorage.getContainer(FUEL_SLOT).getItem(0);
-                this.fuelProgress = 0;
-                if (isFuel(fuelStack)) {
-                    this.combinedStorage.getStorage(Direction.UP).extract(ItemVariant.of(fuelStack), 1, null);
-                    update();
-                }
-            }
-        }
-
         if (this.currentRecipeId == null) {
-            Optional<RecipeHolder<AlloyFurnaceRecipe>> match = getCurrentRecipe();
-
-            if (match.isPresent()) {
-                RecipeHolder<AlloyFurnaceRecipe> recipeHolder = match.get();
-                this.currentRecipeId = recipeHolder.id();
-                this.maxProgress = recipeHolder.value().cookTime();
+            Optional<RecipeHolder<AlloyFurnaceRecipe>> recipeHolder = getCurrentRecipe();
+            if (recipeHolder.isPresent()) {
+                this.currentRecipeId = recipeHolder.get().id();
+                this.maxProgress = recipeHolder.get().value().cookTime();
                 this.progress = 0;
                 update();
-            } else {
-                int progress = this.progress;
-                int maxProgress = this.maxProgress;
-                if (progress != 0 || maxProgress != 0) {
-                    reset();
-                }
-
-                return;
             }
+
+            return;
         }
 
-        if (this.progress++ >= this.maxProgress) {
-            Optional<RecipeHolder<AlloyFurnaceRecipe>> match = this.level.getRecipeManager()
-                    .getAllRecipesFor(AlloyFurnaceRecipe.Type.INSTANCE)
-                    .stream()
-                    .filter(recipeHolder -> recipeHolder.id().equals(this.currentRecipeId))
-                    .findFirst();
-
-            if (match.isPresent()) {
-                RecipeHolder<AlloyFurnaceRecipe> recipeHolder = match.get();
-                AlloyFurnaceRecipe recipe = recipeHolder.value();
-
-                InventoryStorage output = this.combinedStorage.getStorage(Direction.DOWN);
-                InventoryStorage input0 = this.combinedStorage.getStorage(Direction.EAST);
-                InventoryStorage input1 = this.combinedStorage.getStorage(Direction.WEST);
-                try(Transaction transaction = Transaction.openOuter()) {
-                    output.insert(ItemVariant.of(recipe.output()), recipe.output().getCount(), transaction);
-                    try(Transaction transaction1 = Transaction.openNested(transaction)) {
-                        input0.extract(ItemVariant.of(this.combinedStorage.getContainer(INPUT_SLOT_0).getItem(0)), recipe.inputA().count(), transaction1);
-                        input1.extract(ItemVariant.of(this.combinedStorage.getContainer(INPUT_SLOT_1).getItem(0)), recipe.inputB().count(), transaction1);
-                        transaction1.commit();
-                    }
-
-                    transaction.commit();
-                }
-                reset();
-                return;
-            }
-
-            Optional<RecipeHolder<AlloyFurnaceRecipe>> newMatch = getCurrentRecipe();
-            if (newMatch.isPresent()) {
-                RecipeHolder<AlloyFurnaceRecipe> recipeHolder = newMatch.get();
-                this.currentRecipeId = recipeHolder.id();
-                this.maxProgress = recipeHolder.value().cookTime();
-                update();
-                return;
-            }
-
+        Optional<RecipeHolder<AlloyFurnaceRecipe>> currentRecipe = getCurrentRecipe();
+        if (currentRecipe.isEmpty() || !currentRecipe.get().id().equals(this.currentRecipeId) || !canOutput(currentRecipe.get().value().output())) {
             reset();
+            return;
         }
+
+        if (this.burnTime > 0) {
+            this.burnTime--;
+            this.progress++;
+            update();
+        } else {
+            ItemStack fuel = this.combinedStorage.getContainer(FUEL_SLOT).getItem(0);
+            if(isFuel(fuel)) {
+                int burnTime = getBurnTime(fuel);
+                this.maxBurnTime = burnTime;
+                this.burnTime = burnTime;
+                this.combinedStorage.getContainer(FUEL_SLOT).removeItem(0, 1);
+                update();
+            } else {
+                reset();
+                this.maxBurnTime = 0;
+                return;
+            }
+        }
+
+        AlloyFurnaceRecipe recipe = currentRecipe.get().value();
+        if (this.progress >= this.maxProgress) {
+            this.progress = 0;
+            this.maxProgress = 0;
+            this.currentRecipeId = null;
+            this.combinedStorage.getContainer(INPUT_SLOT_0).removeItem(0, recipe.inputA().count());
+            this.combinedStorage.getContainer(INPUT_SLOT_1).removeItem(0, recipe.inputB().count());
+            this.combinedStorage.getContainer(OUTPUT_SLOT).addItem(recipe.output());
+            update();
+        }
+    }
+
+    private int getBurnTime(ItemStack fuel) {
+        return FurnaceBlockEntity.getFuel().getOrDefault(fuel.getItem(), 1);
+    }
+
+    private boolean canOutput(ItemStack output) {
+        return this.combinedStorage.getContainer(OUTPUT_SLOT).canAddItem(output);
     }
 
     private void reset() {
@@ -175,11 +159,16 @@ public class AlloyFurnaceBlockEntity extends UpdatableBlockEntity implements Tic
         update();
     }
 
+
+    public SimpleContainer getInventory() {
+        return new SimpleContainer(this.combinedStorage.getStacks().toArray(new ItemStack[0]));
+    }
+
     private Optional<RecipeHolder<AlloyFurnaceRecipe>> getCurrentRecipe() {
         if (this.level == null || this.level.isClientSide)
             return Optional.empty();
 
-        var inventory = new SimpleContainer(this.combinedStorage.getStacks().toArray(new ItemStack[0]));
+        var inventory = getInventory();
         return this.level.getRecipeManager().getRecipeFor(AlloyFurnaceRecipe.Type.INSTANCE, inventory, this.level);
     }
 
@@ -190,7 +179,8 @@ public class AlloyFurnaceBlockEntity extends UpdatableBlockEntity implements Tic
         var modidData = new CompoundTag();
         modidData.putInt("Progress", this.progress);
         modidData.putInt("MaxProgress", this.maxProgress);
-        modidData.putInt("FuelProgress", this.fuelProgress);
+        modidData.putInt("BurnTime", this.burnTime);
+        modidData.putInt("MaxBurnTime", this.maxBurnTime);
         modidData.putString("CurrentRecipe", this.currentRecipeId == null ? "" : this.currentRecipeId.toString());
         modidData.put("Inventory", this.combinedStorage.writeNBT());
 
@@ -211,8 +201,11 @@ public class AlloyFurnaceBlockEntity extends UpdatableBlockEntity implements Tic
         if (modidData.contains("MaxProgress", Tag.TAG_INT))
             this.maxProgress = modidData.getInt("MaxProgress");
 
-        if (modidData.contains("FuelProgress", Tag.TAG_INT))
-            this.fuelProgress = modidData.getInt("FuelProgress");
+        if (modidData.contains("BurnTime", Tag.TAG_INT))
+            this.burnTime = modidData.getInt("BurnTime");
+
+        if (modidData.contains("MaxBurnTime", Tag.TAG_INT))
+            this.maxBurnTime = modidData.getInt("MaxBurnTime");
 
         if (modidData.contains("CurrentRecipe", Tag.TAG_STRING)) {
             String currentRecipe = modidData.getString("CurrentRecipe");

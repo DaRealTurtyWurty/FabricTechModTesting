@@ -9,15 +9,19 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
-public class AlloyFurnaceMenu extends AbstractContainerMenu {
+public class AlloyFurnaceMenu extends RecipeBookMenu<SimpleContainer> {
     private final AlloyFurnaceBlockEntity blockEntity;
     private final ContainerLevelAccess levelAccess;
     private final ContainerData data;
+    // private final RecipeBookType recipeBookType;
 
     public AlloyFurnaceMenu(int id, Inventory playerInv, FriendlyByteBuf buf) {
         this(id, playerInv, playerInv.player.level().getBlockEntity(buf.readBlockPos()), new SimpleContainerData(4));
@@ -125,11 +129,11 @@ public class AlloyFurnaceMenu extends AbstractContainerMenu {
         return this.data.get(1);
     }
 
-    public int getFuelProgress() {
+    public int getBurnTime() {
         return this.data.get(2);
     }
 
-    public int getMaxFuelProgress() {
+    public int getMaxBurnTime() {
         return this.data.get(3);
     }
 
@@ -142,12 +146,59 @@ public class AlloyFurnaceMenu extends AbstractContainerMenu {
         return Mth.clamp(progress / maxProgress, 0.0F, 1.0F);
     }
 
-    public float getFuelProgressPercent() {
-        float progress = getFuelProgress();
-        float maxProgress = getMaxFuelProgress();
+    public float getBurnTimePercent() {
+        float progress = getBurnTime();
+        float maxProgress = getMaxBurnTime();
         if (maxProgress == 0 || progress == 0)
             return 0.0F;
 
         return Mth.clamp(progress / maxProgress, 0.0F, 1.0F);
+    }
+
+    @Override
+    public void fillCraftSlotsStackedContents(StackedContents stackedContents) {
+        this.blockEntity.getInventory().fillStackedContents(stackedContents);
+    }
+
+    @Override
+    public void clearCraftingContent() {
+        getSlot(AlloyFurnaceBlockEntity.INPUT_SLOT_0).set(ItemStack.EMPTY);
+        getSlot(AlloyFurnaceBlockEntity.INPUT_SLOT_1).set(ItemStack.EMPTY);
+        getSlot(AlloyFurnaceBlockEntity.OUTPUT_SLOT).set(ItemStack.EMPTY);
+    }
+
+    @Override
+    public boolean recipeMatches(RecipeHolder<? extends Recipe<SimpleContainer>> recipeHolder) {
+        return recipeHolder.value().matches(this.blockEntity.getInventory(), this.blockEntity.getLevel());
+    }
+
+    @Override
+    public int getResultSlotIndex() {
+        return AlloyFurnaceBlockEntity.OUTPUT_SLOT;
+    }
+
+    @Override
+    public int getGridWidth() {
+        return 2;
+    }
+
+    @Override
+    public int getGridHeight() {
+        return 1;
+    }
+
+    @Override
+    public int getSize() {
+        return 4;
+    }
+
+    @Override
+    public RecipeBookType getRecipeBookType() {
+        return null;
+    }
+
+    @Override
+    public boolean shouldMoveToInventory(int i) {
+        return i != AlloyFurnaceBlockEntity.OUTPUT_SLOT;
     }
 }

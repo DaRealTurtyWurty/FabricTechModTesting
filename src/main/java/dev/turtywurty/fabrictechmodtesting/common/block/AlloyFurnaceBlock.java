@@ -53,6 +53,8 @@ public class AlloyFurnaceBlock extends Block implements EntityBlock {
                 blockEntity.getCombinedStorage().dropContents(level, pos);
                 level.updateNeighbourForOutputSignal(pos, this);
             }
+
+            super.onRemove(state, level, pos, newState, moved);
         }
     }
 
