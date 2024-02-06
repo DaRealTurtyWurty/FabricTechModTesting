@@ -23,7 +23,11 @@ public abstract class RecipeBookTypeMixin {
         throw new AssertionError();
     }
 
+    @Unique
     private static RecipeBookType fabrictechmodtesting$addVariant(String internalName) {
+        if(RecipeBookTypeMixin.$VALUES == null)
+            throw new IllegalStateException("RecipeBookTypeMixin.$VALUES is null!");
+
         List<RecipeBookType> variants = new ArrayList<>(Arrays.asList(RecipeBookTypeMixin.$VALUES));
         RecipeBookType recipeBookType = fabrictechmodtesting$invokeInit(internalName, variants.get(variants.size() - 1).ordinal() + 1);
         variants.add(recipeBookType);
