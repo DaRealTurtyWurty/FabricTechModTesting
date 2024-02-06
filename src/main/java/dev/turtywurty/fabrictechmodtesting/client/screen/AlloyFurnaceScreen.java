@@ -19,6 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
@@ -64,7 +65,7 @@ public class AlloyFurnaceScreen extends AbstractContainerScreen<AlloyFurnaceMenu
     protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
         guiGraphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
 
-        int progress = Mth.ceil(this.menu.getProgress() * 24);
+        int progress = Mth.ceil(this.menu.getProgressPercent() * 24);
         guiGraphics.blit(TEXTURE, this.leftPos + 79, this.topPos + 34, 176, 14, progress, 17);
 
         int burnTime = Mth.ceil(this.menu.getBurnTimePercent() * 14);
@@ -92,7 +93,7 @@ public class AlloyFurnaceScreen extends AbstractContainerScreen<AlloyFurnaceMenu
     }
 
     @Override
-    public RecipeBookComponent getRecipeBookComponent() {
+    public @NotNull RecipeBookComponent getRecipeBookComponent() {
         return this.recipeBookComponent;
     }
 

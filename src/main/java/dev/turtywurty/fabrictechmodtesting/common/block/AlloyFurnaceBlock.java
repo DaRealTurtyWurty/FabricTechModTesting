@@ -50,7 +50,7 @@ public class AlloyFurnaceBlock extends Block implements EntityBlock {
         if (state.getBlock() != newState.getBlock()) {
             BlockEntity be = level.getBlockEntity(pos);
             if (be instanceof AlloyFurnaceBlockEntity blockEntity) {
-                blockEntity.getCombinedStorage().dropContents(level, pos);
+                blockEntity.getWrappedStorage().dropContents(level, pos);
                 level.updateNeighbourForOutputSignal(pos, this);
             }
 

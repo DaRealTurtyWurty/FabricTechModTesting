@@ -4,6 +4,7 @@
   "package": "dev.turtywurty.fabrictechmodtesting.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "RecipeBookTypeMixin"
   ],
   "client": [
   ],

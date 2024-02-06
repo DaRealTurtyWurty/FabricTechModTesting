@@ -1,7 +1,7 @@
 package dev.turtywurty.fabrictechmodtesting.common.menu;
 
 import dev.turtywurty.fabrictechmodtesting.common.blockentity.AlloyFurnaceBlockEntity;
-import dev.turtywurty.fabrictechmodtesting.common.blockentity.util.WrappedContainerStorage;
+import dev.turtywurty.fabrictechmodtesting.common.blockentity.util.WrappedStorage;
 import dev.turtywurty.fabrictechmodtesting.core.init.BlockInit;
 import dev.turtywurty.fabrictechmodtesting.core.init.MenuTypeInit;
 import net.minecraft.network.FriendlyByteBuf;
@@ -21,7 +21,6 @@ public class AlloyFurnaceMenu extends RecipeBookMenu<SimpleContainer> {
     private final AlloyFurnaceBlockEntity blockEntity;
     private final ContainerLevelAccess levelAccess;
     private final ContainerData data;
-    // private final RecipeBookType recipeBookType;
 
     public AlloyFurnaceMenu(int id, Inventory playerInv, FriendlyByteBuf buf) {
         this(id, playerInv, playerInv.player.level().getBlockEntity(buf.readBlockPos()), new SimpleContainerData(4));
@@ -32,32 +31,32 @@ public class AlloyFurnaceMenu extends RecipeBookMenu<SimpleContainer> {
         if (!(blockEntity instanceof AlloyFurnaceBlockEntity alloyFurnaceBlockEntity))
             throw new IllegalArgumentException("Block entity is not an instance of AlloyFurnaceBlockEntity!");
 
-        WrappedContainerStorage<SimpleContainer> wrappedContainerStorage = alloyFurnaceBlockEntity.getCombinedStorage();
-        wrappedContainerStorage.checkSize(4);
+        WrappedStorage<SimpleContainer> wrappedStorage = alloyFurnaceBlockEntity.getWrappedStorage();
+        wrappedStorage.checkSize(4);
         checkContainerDataCount(data, 4);
 
-        wrappedContainerStorage.startOpen(playerInv.player);
+        wrappedStorage.startOpen(playerInv.player);
 
         this.blockEntity = alloyFurnaceBlockEntity;
         this.levelAccess = ContainerLevelAccess.create(this.blockEntity.getLevel(), this.blockEntity.getBlockPos());
         this.data = data;
 
-        addOurSlots(wrappedContainerStorage);
+        addOurSlots(wrappedStorage);
         addPlayerSlots(playerInv);
 
         addDataSlots(data);
     }
 
-    private void addOurSlots(WrappedContainerStorage<SimpleContainer> wrappedContainerStorage) {
-        addSlot(new Slot(wrappedContainerStorage.getContainer(AlloyFurnaceBlockEntity.INPUT_SLOT_0), 0, 42, 17));
-        addSlot(new Slot(wrappedContainerStorage.getContainer(AlloyFurnaceBlockEntity.INPUT_SLOT_1), 0, 70, 17));
-        addSlot(new Slot(wrappedContainerStorage.getContainer(AlloyFurnaceBlockEntity.FUEL_SLOT), 0, 56, 53) {
+    private void addOurSlots(WrappedStorage<SimpleContainer> wrappedStorage) {
+        addSlot(new Slot(wrappedStorage.getContainer(AlloyFurnaceBlockEntity.INPUT_SLOT_0), 0, 42, 17));
+        addSlot(new Slot(wrappedStorage.getContainer(AlloyFurnaceBlockEntity.INPUT_SLOT_1), 0, 70, 17));
+        addSlot(new Slot(wrappedStorage.getContainer(AlloyFurnaceBlockEntity.FUEL_SLOT), 0, 56, 53) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return this.container.canPlaceItem(0, stack);
             }
         });
-        addSlot(new Slot(wrappedContainerStorage.getContainer(AlloyFurnaceBlockEntity.OUTPUT_SLOT), 0, 116, 35) {
+        addSlot(new Slot(wrappedStorage.getContainer(AlloyFurnaceBlockEntity.OUTPUT_SLOT), 0, 116, 35) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return this.container.canPlaceItem(0, stack);
@@ -113,7 +112,7 @@ public class AlloyFurnaceMenu extends RecipeBookMenu<SimpleContainer> {
     @Override
     public void removed(Player player) {
         super.removed(player);
-        this.blockEntity.getCombinedStorage().stopOpen(player);
+        this.blockEntity.getWrappedStorage().stopOpen(player);
     }
 
     @Override
@@ -193,12 +192,12 @@ public class AlloyFurnaceMenu extends RecipeBookMenu<SimpleContainer> {
     }
 
     @Override
-    public RecipeBookType getRecipeBookType() {
-        return null;
+    public @NotNull RecipeBookType getRecipeBookType() {
+        return RecipeBookType.valueOf("ALLOY_FURNACE");
     }
 
     @Override
-    public boolean shouldMoveToInventory(int i) {
-        return i != AlloyFurnaceBlockEntity.OUTPUT_SLOT;
+    public boolean shouldMoveToInventory(int slot) {
+        return slot != AlloyFurnaceBlockEntity.OUTPUT_SLOT;
     }
 }

@@ -40,7 +40,7 @@ public class AlloyFurnaceBlockEntity extends UpdatableBlockEntity implements Tic
     private int progress, maxProgress, burnTime, maxBurnTime;
     private ResourceLocation currentRecipeId;
 
-    private final WrappedContainerStorage<SimpleContainer> combinedStorage = new WrappedContainerStorage<>();
+    private final WrappedStorage<SimpleContainer> wrappedStorage = new WrappedStorage<>();
     private final ContainerData containerData = new ContainerData() {
         @Override
         public int get(int index) {
@@ -72,15 +72,15 @@ public class AlloyFurnaceBlockEntity extends UpdatableBlockEntity implements Tic
     public AlloyFurnaceBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(BlockEntityTypeInit.ALLOY_FURNACE, blockPos, blockState);
 
-        this.combinedStorage.addContainer(new SyncingSimpleContainer(this, 1), Direction.EAST);
-        this.combinedStorage.addContainer(new SyncingSimpleContainer(this, 1), Direction.WEST);
-        this.combinedStorage.addContainer(new PredicateSimpleContainer(this, (integer, itemStack) -> isFuel(itemStack), 1), Direction.UP);
-        this.combinedStorage.addContainer(new OutputSimpleContainer(this, 1), Direction.DOWN);
+        this.wrappedStorage.addContainer(new SyncingSimpleContainer(this, 1), Direction.EAST);
+        this.wrappedStorage.addContainer(new SyncingSimpleContainer(this, 1), Direction.WEST);
+        this.wrappedStorage.addContainer(new PredicateSimpleContainer(this, (integer, itemStack) -> isFuel(itemStack), 1), Direction.UP);
+        this.wrappedStorage.addContainer(new OutputSimpleContainer(this, 1), Direction.DOWN);
     }
 
     public static InventoryStorage getProviderHandler(BlockEntity blockEntity, Direction direction) {
         if (blockEntity instanceof AlloyFurnaceBlockEntity alloyFurnaceBlockEntity) {
-            return alloyFurnaceBlockEntity.combinedStorage.getStorage(direction);
+            return alloyFurnaceBlockEntity.wrappedStorage.getStorage(direction);
         }
 
         return null;
@@ -118,12 +118,12 @@ public class AlloyFurnaceBlockEntity extends UpdatableBlockEntity implements Tic
             this.progress++;
             update();
         } else {
-            ItemStack fuel = this.combinedStorage.getContainer(FUEL_SLOT).getItem(0);
+            ItemStack fuel = this.wrappedStorage.getContainer(FUEL_SLOT).getItem(0);
             if(isFuel(fuel)) {
                 int burnTime = getBurnTime(fuel);
                 this.maxBurnTime = burnTime;
                 this.burnTime = burnTime;
-                this.combinedStorage.getContainer(FUEL_SLOT).removeItem(0, 1);
+                this.wrappedStorage.getContainer(FUEL_SLOT).removeItem(0, 1);
                 update();
             } else {
                 reset();
@@ -137,9 +137,9 @@ public class AlloyFurnaceBlockEntity extends UpdatableBlockEntity implements Tic
             this.progress = 0;
             this.maxProgress = 0;
             this.currentRecipeId = null;
-            this.combinedStorage.getContainer(INPUT_SLOT_0).removeItem(0, recipe.inputA().count());
-            this.combinedStorage.getContainer(INPUT_SLOT_1).removeItem(0, recipe.inputB().count());
-            this.combinedStorage.getContainer(OUTPUT_SLOT).addItem(recipe.output());
+            this.wrappedStorage.getContainer(INPUT_SLOT_0).removeItem(0, recipe.inputA().count());
+            this.wrappedStorage.getContainer(INPUT_SLOT_1).removeItem(0, recipe.inputB().count());
+            this.wrappedStorage.getContainer(OUTPUT_SLOT).addItem(recipe.output());
             update();
         }
     }
@@ -149,7 +149,7 @@ public class AlloyFurnaceBlockEntity extends UpdatableBlockEntity implements Tic
     }
 
     private boolean canOutput(ItemStack output) {
-        return this.combinedStorage.getContainer(OUTPUT_SLOT).canAddItem(output);
+        return this.wrappedStorage.getContainer(OUTPUT_SLOT).canAddItem(output);
     }
 
     private void reset() {
@@ -159,9 +159,8 @@ public class AlloyFurnaceBlockEntity extends UpdatableBlockEntity implements Tic
         update();
     }
 
-
     public SimpleContainer getInventory() {
-        return new SimpleContainer(this.combinedStorage.getStacks().toArray(new ItemStack[0]));
+        return new SimpleContainer(this.wrappedStorage.getStacks().toArray(new ItemStack[0]));
     }
 
     private Optional<RecipeHolder<AlloyFurnaceRecipe>> getCurrentRecipe() {
@@ -182,7 +181,7 @@ public class AlloyFurnaceBlockEntity extends UpdatableBlockEntity implements Tic
         modidData.putInt("BurnTime", this.burnTime);
         modidData.putInt("MaxBurnTime", this.maxBurnTime);
         modidData.putString("CurrentRecipe", this.currentRecipeId == null ? "" : this.currentRecipeId.toString());
-        modidData.put("Inventory", this.combinedStorage.writeNBT());
+        modidData.put("Inventory", this.wrappedStorage.writeNBT());
 
         compoundTag.put(FabricTechModTesting.MOD_ID, modidData);
     }
@@ -213,7 +212,7 @@ public class AlloyFurnaceBlockEntity extends UpdatableBlockEntity implements Tic
         }
 
         if (modidData.contains("Inventory", Tag.TAG_LIST))
-            this.combinedStorage.readNBT(modidData.getList("Inventory", Tag.TAG_COMPOUND));
+            this.wrappedStorage.readNBT(modidData.getList("Inventory", Tag.TAG_COMPOUND));
     }
 
     @Nullable
@@ -240,8 +239,8 @@ public class AlloyFurnaceBlockEntity extends UpdatableBlockEntity implements Tic
         return new AlloyFurnaceMenu(id, inventory, this, this.containerData);
     }
 
-    public WrappedContainerStorage<SimpleContainer> getCombinedStorage() {
-        return this.combinedStorage;
+    public WrappedStorage<SimpleContainer> getWrappedStorage() {
+        return this.wrappedStorage;
     }
 
     @Override

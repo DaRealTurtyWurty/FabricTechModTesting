@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class WrappedContainerStorage<T extends SimpleContainer> implements INBTSerializable<ListTag> {
+public class WrappedStorage<T extends SimpleContainer> implements INBTSerializable<ListTag> {
     private final List<T> containers = new ArrayList<>();
     private final List<InventoryStorage> storages = new ArrayList<>();
     private final Map<Direction, InventoryStorage> sidedStorageMap = new HashMap<>();
