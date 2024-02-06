@@ -8,7 +8,9 @@
     "RecipeBookTypeMixin"
   ],
   "client": [
-    "RecipeBookCategoriesMixin"
+    "ClientRecipeBookMixin",
+    "RecipeBookCategoriesMixin",
+    "RecipeBookComponentMixin"
   ],
   "injectors": {
     "defaultRequire": 1

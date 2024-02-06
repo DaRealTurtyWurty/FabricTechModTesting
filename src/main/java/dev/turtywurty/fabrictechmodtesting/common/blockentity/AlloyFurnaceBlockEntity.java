@@ -95,6 +95,11 @@ public class AlloyFurnaceBlockEntity extends UpdatableBlockEntity implements Tic
         if (this.level == null || this.level.isClientSide)
             return;
 
+        if (this.burnTime > 0) {
+            this.burnTime--;
+            update();
+        }
+
         if (this.currentRecipeId == null) {
             Optional<RecipeHolder<AlloyFurnaceRecipe>> recipeHolder = getCurrentRecipe();
             if (recipeHolder.isPresent()) {
@@ -113,11 +118,7 @@ public class AlloyFurnaceBlockEntity extends UpdatableBlockEntity implements Tic
             return;
         }
 
-        if (this.burnTime > 0) {
-            this.burnTime--;
-            this.progress++;
-            update();
-        } else {
+        if (this.burnTime <= 0) {
             ItemStack fuel = this.wrappedStorage.getContainer(FUEL_SLOT).getItem(0);
             if(isFuel(fuel)) {
                 int burnTime = getBurnTime(fuel);
@@ -131,6 +132,8 @@ public class AlloyFurnaceBlockEntity extends UpdatableBlockEntity implements Tic
                 return;
             }
         }
+
+        this.progress++;
 
         AlloyFurnaceRecipe recipe = currentRecipe.get().value();
         if (this.progress >= this.maxProgress) {

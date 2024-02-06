@@ -1,20 +1,19 @@
 package dev.turtywurty.fabrictechmodtesting.mixin;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import dev.turtywurty.fabrictechmodtesting.core.init.ItemInit;
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.ItemStack;
-import org.lwjgl.openal.AL;
+import net.minecraft.world.item.Items;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.gen.Invoker;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Mixin(RecipeBookCategories.class)
 @Unique
@@ -29,7 +28,22 @@ public class RecipeBookCategoriesMixin {
             fabrictechmodtesting$addVariant("ALLOY_FURNACE", new ItemStack(ItemInit.STEEL_INGOT));
 
     @Unique
+    private static final RecipeBookCategories ALLOY_FURNACE_SEARCH =
+            fabrictechmodtesting$addVariant("ALLOY_FURNACE_SEARCH", new ItemStack(Items.COMPASS));
+
+    @Unique
     private static final List<RecipeBookCategories> ALLOY_FURNACE_CATEGORIES = ImmutableList.of(ALLOY_FURNACE);
+
+    @Shadow
+    @Mutable
+    @Final
+    public static Map<RecipeBookCategories, List<RecipeBookCategories>> AGGREGATE_CATEGORIES;
+
+    static {
+        Map<RecipeBookCategories, List<RecipeBookCategories>> mutableCopy = new HashMap<>(AGGREGATE_CATEGORIES);
+        mutableCopy.put(ALLOY_FURNACE_SEARCH, ImmutableList.of(ALLOY_FURNACE));
+        AGGREGATE_CATEGORIES = ImmutableMap.copyOf(mutableCopy);
+    }
 
     @Invoker("<init>")
     public static RecipeBookCategories fabrictechmodtesting$invokeInit(String internalName, int internalId, ItemStack... stacks) {

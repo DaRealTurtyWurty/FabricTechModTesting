@@ -2,6 +2,7 @@ package dev.turtywurty.fabrictechmodtesting.common.recipe;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.turtywurty.fabrictechmodtesting.FabricTechModTesting;
 import dev.turtywurty.fabrictechmodtesting.common.blockentity.AlloyFurnaceBlockEntity;
 import dev.turtywurty.fabrictechmodtesting.core.util.CountedIngredient;
 import net.minecraft.core.RegistryAccess;
@@ -45,6 +46,11 @@ public record AlloyFurnaceRecipe(CountedIngredient inputA, CountedIngredient inp
     @Override
     public @NotNull RecipeType<?> getType() {
         return Type.INSTANCE;
+    }
+
+    @Override
+    public @NotNull String getGroup() {
+        return FabricTechModTesting.id("alloy_furnace").toString();
     }
 
     public static class Type implements RecipeType<AlloyFurnaceRecipe> {
