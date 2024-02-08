@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "alloy_furnace",
+  "key": {
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "S": {
+      "item": "fabrictechmodtesting:steel_block"
+    }
+  },
+  "pattern": [
+    "SSS",
+    "SFS",
+    "SSS"
+  ],
+  "result": {
+    "item": "fabrictechmodtesting:alloy_furnace"
+  }
+}

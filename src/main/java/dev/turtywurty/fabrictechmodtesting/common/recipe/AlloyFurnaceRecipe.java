@@ -5,18 +5,22 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.turtywurty.fabrictechmodtesting.FabricTechModTesting;
 import dev.turtywurty.fabrictechmodtesting.common.blockentity.AlloyFurnaceBlockEntity;
 import dev.turtywurty.fabrictechmodtesting.core.util.CountedIngredient;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public record AlloyFurnaceRecipe(CountedIngredient inputA, CountedIngredient inputB, ItemStack output, int cookTime)
-        implements Recipe<SimpleContainer> {
+        implements Recipe<SimpleContainer>, CountedIngredient.CountedIngredientRecipe {
     @Override
     public boolean matches(SimpleContainer container, Level level) {
         return this.inputA.test(container.getItem(AlloyFurnaceBlockEntity.INPUT_SLOT_0)) &&
@@ -51,6 +55,16 @@ public record AlloyFurnaceRecipe(CountedIngredient inputA, CountedIngredient inp
     @Override
     public @NotNull String getGroup() {
         return FabricTechModTesting.id("alloy_furnace").toString();
+    }
+
+    @Override
+    public @NotNull NonNullList<Ingredient> getIngredients() {
+        return NonNullList.of(Ingredient.EMPTY, inputA.toVanilla(), inputB.toVanilla());
+    }
+
+    @Override
+    public List<CountedIngredient> getCountedIngredients() {
+        return List.of(CountedIngredient.EMPTY, inputA, inputB);
     }
 
     public static class Type implements RecipeType<AlloyFurnaceRecipe> {

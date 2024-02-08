@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "fabrictechmodtesting:block/alloy_furnace_front_on",
+    "side": "fabrictechmodtesting:block/alloy_furnace_side",
+    "top": "fabrictechmodtesting:block/alloy_furnace_top"
+  }
+}

@@ -7,6 +7,7 @@ import dev.turtywurty.fabrictechmodtesting.core.init.ItemInit;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.contents.TranslatableContents;
 
 public class TechModLanguageProvider extends FabricLanguageProvider {
     public TechModLanguageProvider(FabricDataOutput output) {
@@ -14,7 +15,7 @@ public class TechModLanguageProvider extends FabricLanguageProvider {
     }
 
     private static void addComponent(TranslationBuilder builder, Component key, String value) {
-        builder.add(key.getString(), value);
+        builder.add(((TranslatableContents)key.getContents()).getKey(), value);
     }
 
     @Override

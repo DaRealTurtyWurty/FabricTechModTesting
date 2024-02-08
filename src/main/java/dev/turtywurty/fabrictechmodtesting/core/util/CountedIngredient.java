@@ -13,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -22,6 +23,7 @@ public record CountedIngredient(Ingredient ingredient, int count) implements Cus
             Codec.INT.fieldOf("count").forGetter(CountedIngredient::count)
     ).apply(instance, CountedIngredient::new));
     public static final Serializer SERIALIZER = new Serializer();
+    public static final CountedIngredient EMPTY = new CountedIngredient(Ingredient.EMPTY, 0);
 
     public static CountedIngredient of(int count, ItemLike... items) {
         return new CountedIngredient(Ingredient.of(items), count);
@@ -46,7 +48,11 @@ public record CountedIngredient(Ingredient ingredient, int count) implements Cus
 
     @Override
     public List<ItemStack> getMatchingStacks() {
-        return List.of(this.ingredient.getItems());
+        return List.of(Arrays.stream(this.ingredient.getItems()).map(stack -> {
+            ItemStack copy = stack.copy();
+            copy.setCount(this.count);
+            return copy;
+        }).toArray(ItemStack[]::new));
     }
 
     @Override
@@ -57,6 +63,10 @@ public record CountedIngredient(Ingredient ingredient, int count) implements Cus
     @Override
     public CustomIngredientSerializer<?> getSerializer() {
         return SERIALIZER;
+    }
+
+    public interface CountedIngredientRecipe {
+        List<CountedIngredient> getCountedIngredients();
     }
 
     public static class Serializer implements CustomIngredientSerializer<CountedIngredient> {

@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "minecraft:steel_block"
+        "recipe": "fabrictechmodtesting:steel_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -28,7 +28,7 @@
   ],
   "rewards": {
     "recipes": [
-      "minecraft:steel_block"
+      "fabrictechmodtesting:steel_block"
     ]
   }
 }

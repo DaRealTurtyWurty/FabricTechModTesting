@@ -1,2 +1,3 @@
-// 1.20.4	2024-02-04T22:24:02.0467236	FabricTechModTesting/Block Loot Tables
+// 1.20.4	2024-02-08T13:19:37.1009495	FabricTechModTesting/Block Loot Tables
 d981867bdce0c12b612f004418287fe1f6bb8484 data\fabrictechmodtesting\loot_tables\blocks\steel_block.json
+0585e2ffb94182109335a188228f19d0f28c5989 data\fabrictechmodtesting\loot_tables\blocks\alloy_furnace.json

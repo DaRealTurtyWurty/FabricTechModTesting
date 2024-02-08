@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.data.models.model.ModelTemplates;
+import net.minecraft.data.models.model.TexturedModel;
 
 public class TechModModelProvider extends FabricModelProvider {
     public TechModModelProvider(FabricDataOutput output) {
@@ -16,6 +17,7 @@ public class TechModModelProvider extends FabricModelProvider {
     @Override
     public void generateBlockStateModels(BlockModelGenerators blockStateModelGenerator) {
         blockStateModelGenerator.createTrivialCube(BlockInit.STEEL_BLOCK);
+        blockStateModelGenerator.createFurnace(BlockInit.ALLOY_FURNACE, TexturedModel.ORIENTABLE_ONLY_TOP);
     }
 
     @Override

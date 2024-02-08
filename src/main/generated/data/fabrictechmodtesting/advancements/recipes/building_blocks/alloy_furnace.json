@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "fabrictechmodtesting:steel_ingot"
+        "recipe": "fabrictechmodtesting:alloy_furnace"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -28,7 +28,7 @@
   ],
   "rewards": {
     "recipes": [
-      "fabrictechmodtesting:steel_ingot"
+      "fabrictechmodtesting:alloy_furnace"
     ]
   }
 }
