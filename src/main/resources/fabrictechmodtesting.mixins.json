@@ -6,7 +6,6 @@
   "mixins": [
     "RecipeBookSettingsMixin",
     "RecipeBookTypeMixin",
-    "ServerPlaceRecipeMixin"
   ],
   "client": [
     "ClientRecipeBookMixin",
