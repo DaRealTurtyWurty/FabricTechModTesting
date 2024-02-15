@@ -2,6 +2,7 @@ package dev.turtywurty.fabrictechmodtesting.common.menu;
 
 import dev.turtywurty.fabrictechmodtesting.common.blockentity.AlloyFurnaceBlockEntity;
 import dev.turtywurty.fabrictechmodtesting.common.blockentity.util.WrappedStorage;
+import dev.turtywurty.fabrictechmodtesting.common.recipe.AlloyFurnaceRecipe;
 import dev.turtywurty.fabrictechmodtesting.core.init.BlockInit;
 import dev.turtywurty.fabrictechmodtesting.core.init.MenuTypeInit;
 import net.minecraft.network.FriendlyByteBuf;
@@ -199,5 +200,13 @@ public class AlloyFurnaceMenu extends RecipeBookMenu<SimpleContainer> {
     @Override
     public boolean shouldMoveToInventory(int slot) {
         return slot != AlloyFurnaceBlockEntity.OUTPUT_SLOT;
+    }
+
+    public AlloyFurnaceBlockEntity getBlockEntity() {
+        return blockEntity;
+    }
+
+    public void setRecipeUsed(RecipeHolder<AlloyFurnaceRecipe> matchingRecipe) {
+        // TODO: Figure out what to do here
     }
 }

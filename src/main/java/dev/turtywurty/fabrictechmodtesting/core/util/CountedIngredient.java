@@ -3,11 +3,13 @@ package dev.turtywurty.fabrictechmodtesting.core.util;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.turtywurty.fabrictechmodtesting.FabricTechModTesting;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -67,6 +69,10 @@ public record CountedIngredient(Ingredient ingredient, int count) implements Cus
 
     public interface CountedIngredientRecipe {
         List<CountedIngredient> getCountedIngredients();
+
+        default int getRealSlotIndex(int index) {
+            return index;
+        }
     }
 
     public static class Serializer implements CustomIngredientSerializer<CountedIngredient> {

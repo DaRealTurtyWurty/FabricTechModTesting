@@ -18,6 +18,12 @@
     ],
     "fabric-datagen": [
       "dev.turtywurty.fabrictechmodtesting.data.FabricTechModTestingDataGenerator"
+    ],
+    "jei_mod_plugin": [
+      "dev.turtywurty.fabrictechmodtesting.compat.jei.FabricTechModTestingJEIPlugin"
+    ],
+    "rei_client": [
+      "dev.turtywurty.fabrictechmodtesting.compat.rei.FabricTechModTestingREIPlugin"
     ]
   },
   "environment": "*",

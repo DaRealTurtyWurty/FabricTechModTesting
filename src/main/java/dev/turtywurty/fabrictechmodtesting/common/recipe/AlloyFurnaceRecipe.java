@@ -5,10 +5,12 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.turtywurty.fabrictechmodtesting.FabricTechModTesting;
 import dev.turtywurty.fabrictechmodtesting.common.blockentity.AlloyFurnaceBlockEntity;
 import dev.turtywurty.fabrictechmodtesting.core.util.CountedIngredient;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -59,12 +61,20 @@ public record AlloyFurnaceRecipe(CountedIngredient inputA, CountedIngredient inp
 
     @Override
     public @NotNull NonNullList<Ingredient> getIngredients() {
-        return NonNullList.of(Ingredient.EMPTY, inputA.toVanilla(), inputB.toVanilla());
+        return NonNullList.of(Ingredient.EMPTY,
+                Ingredient.of(inputA.getMatchingStacks().toArray(new ItemStack[0])),
+                Ingredient.of(inputB.getMatchingStacks().toArray(new ItemStack[0])));
     }
 
     @Override
     public List<CountedIngredient> getCountedIngredients() {
         return List.of(CountedIngredient.EMPTY, inputA, inputB);
+    }
+
+    @Override
+    public int getRealSlotIndex(int index) {
+        if(index == 0) return AlloyFurnaceBlockEntity.FUEL_SLOT;
+        return index - 1;
     }
 
     public static class Type implements RecipeType<AlloyFurnaceRecipe> {
