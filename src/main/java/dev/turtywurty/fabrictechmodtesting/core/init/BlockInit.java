@@ -16,6 +16,9 @@ public class BlockInit {
     public static final AlloyFurnaceBlock ALLOY_FURNACE = registerWithItem("alloy_furnace",
             new AlloyFurnaceBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.FURNACE)));
 
+    public static final CrusherBlock CRUSHER = registerWithItem("crusher",
+            new CrusherBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.FURNACE)));
+
     public static <T extends Block> T register(String name, T block) {
         return Registry.register(BuiltInRegistries.BLOCK, FabricTechModTesting.id(name), block);
     }
