@@ -2,6 +2,7 @@ package dev.turtywurty.fabrictechmodtesting.core.init;
 
 import dev.turtywurty.fabrictechmodtesting.FabricTechModTesting;
 import dev.turtywurty.fabrictechmodtesting.common.recipe.AlloyFurnaceRecipe;
+import dev.turtywurty.fabrictechmodtesting.common.recipe.CrusherRecipe;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.crafting.Recipe;
@@ -14,6 +15,12 @@ public class RecipeInit {
 
     public static final RecipeSerializer<AlloyFurnaceRecipe> ALLOY_FURNACE_SERIALIZER =
             register("alloy_furnace", AlloyFurnaceRecipe.Serializer.INSTANCE);
+
+    public static final RecipeType<CrusherRecipe> CRUSHER_RECIPE =
+            register("crusher", CrusherRecipe.Type.INSTANCE);
+
+    public static final RecipeSerializer<CrusherRecipe> CRUSHER_SERIALIZER =
+            register("crusher", CrusherRecipe.Serializer.INSTANCE);
 
     public static <C extends Recipe<?>, T extends RecipeSerializer<C>> T register(String name, T item) {
         return Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, FabricTechModTesting.id(name), item);

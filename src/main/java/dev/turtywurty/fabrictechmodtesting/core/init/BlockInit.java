@@ -2,6 +2,7 @@ package dev.turtywurty.fabrictechmodtesting.core.init;
 
 import dev.turtywurty.fabrictechmodtesting.FabricTechModTesting;
 import dev.turtywurty.fabrictechmodtesting.common.block.AlloyFurnaceBlock;
+import dev.turtywurty.fabrictechmodtesting.common.block.CrusherBlock;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;

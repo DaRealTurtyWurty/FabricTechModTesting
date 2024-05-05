@@ -50,7 +50,7 @@ public class CrusherBlock extends Block implements EntityBlock {
         if (blockState.getBlock() != blockState2.getBlock()) {
             BlockEntity blockEntity = level.getBlockEntity(blockPos);
             if (blockEntity instanceof CrusherBlockEntity crusherBlockEntity) {
-                crusherBlockEntity.getWrappedStorage().dropContents(level, blockPos);
+                crusherBlockEntity.getInventoryStorage().dropContents(level, blockPos);
                 level.updateNeighbourForOutputSignal(blockPos, this);
             }
 

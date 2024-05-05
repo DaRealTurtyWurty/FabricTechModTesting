@@ -16,7 +16,7 @@ public class RecipeBookComponentMixin {
             )
     )
     private RecipeBookCategories fabrictechmodtesting$updateTabs(RecipeBookCategories original) {
-        if (original == RecipeBookCategories.valueOf("ALLOY_FURNACE")) {
+        if (original == RecipeBookCategories.valueOf("ALLOY_FURNACE") || original == RecipeBookCategories.valueOf("CRUSHER")) {
             return RecipeBookCategories.CRAFTING_SEARCH;
         }
 

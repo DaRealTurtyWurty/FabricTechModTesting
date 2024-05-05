@@ -1,6 +1,7 @@
 package dev.turtywurty.fabrictechmodtesting.mixin;
 
 import dev.turtywurty.fabrictechmodtesting.common.recipe.AlloyFurnaceRecipe;
+import dev.turtywurty.fabrictechmodtesting.common.recipe.CrusherRecipe;
 import net.minecraft.client.ClientRecipeBook;
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -21,6 +22,10 @@ public class ClientRecipeBookMixin {
         if (recipeHolder.value() instanceof AlloyFurnaceRecipe) {
             callback.setReturnValue(RecipeBookCategories.valueOf("ALLOY_FURNACE"));
         }
+
+        if(recipeHolder.value() instanceof CrusherRecipe) {
+            callback.setReturnValue(RecipeBookCategories.valueOf("CRUSHER"));
+        }
     }
 
     @Inject(method = "categorizeAndGroupRecipes", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILHARD)
@@ -32,5 +37,10 @@ public class ClientRecipeBookMixin {
                 .filter(recipeHolder -> recipeHolder.value() instanceof AlloyFurnaceRecipe)
                 .toList();
         map.put(RecipeBookCategories.valueOf("ALLOY_FURNACE"), List.of(alloyFurnaceRecipes));
+
+        List<RecipeHolder<?>> crusherRecipes = StreamSupport.stream(recipes.spliterator(), false)
+                .filter(recipeHolder -> recipeHolder.value() instanceof CrusherRecipe)
+                .toList();
+        map.put(RecipeBookCategories.valueOf("CRUSHER"), List.of(crusherRecipes));
     }
 }
