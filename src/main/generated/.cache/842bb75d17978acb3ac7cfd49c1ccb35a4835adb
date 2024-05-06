@@ -1,7 +1,10 @@
-// 1.20.4	2024-02-08T13:19:37.096428	FabricTechModTesting/Model Definitions
+// 1.20.4	2024-05-06T14:43:31.6869585	FabricTechModTesting/Model Definitions
 d626e79214e71f18cb8fe29796cde199435252f3 assets\fabrictechmodtesting\models\item\alloy_furnace.json
+2b796d985ce8c9dac60de11deb372ca90981b3fc assets\fabrictechmodtesting\models\item\crusher.json
+e0d9257d1e7cac8ed099bb83b9c4336232ab2ed6 assets\fabrictechmodtesting\models\block\crusher.json
 f7cfde4f588fee873342c1b19183bbbc0e176f1e assets\fabrictechmodtesting\blockstates\alloy_furnace.json
 4c2e69c94c9921df6cbaa4e1028dae91142d52c8 assets\fabrictechmodtesting\models\block\alloy_furnace_on.json
+5e292009ae96d1de2292a4c1ed390d99bcf7f5a2 assets\fabrictechmodtesting\blockstates\crusher.json
 17265d5c550078448b0849d98650d317368a1dd1 assets\fabrictechmodtesting\models\block\steel_block.json
 9d828b2d34a9d0148500417dc5f279f33eba45fa assets\fabrictechmodtesting\models\item\steel_ingot.json
 39b403635b32001bb62fc58fba41ea05c29a7516 assets\fabrictechmodtesting\models\block\alloy_furnace.json

@@ -59,7 +59,7 @@ public class CrusherScreen extends AbstractContainerScreen<CrusherMenu> implemen
         guiGraphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
 
         int progress = Mth.ceil(this.menu.getProgressPercent() * 24);
-        guiGraphics.blit(TEXTURE, this.leftPos + 79, this.topPos + 34, 176, 14, progress, 17);
+        guiGraphics.blit(TEXTURE, this.leftPos + 67, this.topPos + 35, 176, 0, progress, 17);
     }
 
     @Override
@@ -137,8 +137,8 @@ public class CrusherScreen extends AbstractContainerScreen<CrusherMenu> implemen
 
             ItemStack resultA = crusherRecipe.outputA();
             ItemStack resultB = crusherRecipe.outputB();
-            Slot resultSlot0 = list.get(CrusherBlockEntity.OUTPUT_SLOT_0);
-            Slot resultSlot1 = list.get(CrusherBlockEntity.OUTPUT_SLOT_1);
+            Slot resultSlot0 = list.get(CrusherBlockEntity.OUTPUT_SLOT);
+            Slot resultSlot1 = list.get(CrusherBlockEntity.OUTPUT_SLOT + 1);
 
             this.ghostRecipe.addIngredient(Ingredient.of(resultA), resultSlot0.x, resultSlot0.y);
             this.ghostRecipe.addIngredient(Ingredient.of(resultB), resultSlot1.x, resultSlot1.y);

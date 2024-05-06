@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "crusher",
+  "key": {
+    "A": {
+      "item": "minecraft:anvil"
+    },
+    "S": {
+      "item": "fabrictechmodtesting:steel_block"
+    }
+  },
+  "pattern": [
+    "SSS",
+    "SAS",
+    "SSS"
+  ],
+  "result": {
+    "item": "fabrictechmodtesting:crusher"
+  }
+}

@@ -36,10 +36,11 @@ import java.util.Optional;
 
 public class CrusherBlockEntity extends UpdatableBlockEntity implements TickableBlockEntity, ExtendedScreenHandlerFactory {
     public static final Component TITLE = Component.translatable("container." + FabricTechModTesting.MOD_ID + ".crusher");
-    public static final int INPUT_SLOT = 0, OUTPUT_SLOT_0 = 1, OUTPUT_SLOT_1 = 2;
+    public static final int INPUT_SLOT = 0, OUTPUT_SLOT = 1;
+
     private final WrappedInventoryStorage<SimpleContainer> wrappedInventoryStorage = new WrappedInventoryStorage<>();
     private final WrappedEnergyStorage wrappedEnergyStorage = new WrappedEnergyStorage();
-    private int progress, maxProgress;
+
     private final ContainerData containerData = new ContainerData() {
         @Override
         public int get(int value) {
@@ -64,6 +65,8 @@ public class CrusherBlockEntity extends UpdatableBlockEntity implements Tickable
             return 2;
         }
     };
+
+    private int progress, maxProgress;
     private ResourceLocation currentRecipeId;
 
     public CrusherBlockEntity(BlockPos blockPos, BlockState blockState) {
@@ -87,6 +90,8 @@ public class CrusherBlockEntity extends UpdatableBlockEntity implements Tickable
     public void tick() {
         if (this.level == null || this.level.isClientSide)
             return;
+
+        this.wrappedEnergyStorage.getStorage(Direction.SOUTH).insert(1000, Transaction.openOuter());
 
         if (this.currentRecipeId == null) {
             Optional<RecipeHolder<CrusherRecipe>> recipeHolder = getCurrentRecipe();
@@ -118,10 +123,10 @@ public class CrusherBlockEntity extends UpdatableBlockEntity implements Tickable
                 this.wrappedInventoryStorage.getContainer(INPUT_SLOT).removeItem(0, recipe.input().count());
 
                 if (!outputA.isEmpty())
-                    this.wrappedInventoryStorage.getContainer(OUTPUT_SLOT_0).addItem(outputA);
+                    this.wrappedInventoryStorage.getContainer(OUTPUT_SLOT).addItem(outputA);
 
                 if (!outputB.isEmpty())
-                    this.wrappedInventoryStorage.getContainer(OUTPUT_SLOT_1).addItem(outputB);
+                    this.wrappedInventoryStorage.getContainer(OUTPUT_SLOT).addItem(outputB);
 
                 reset();
             }
@@ -135,7 +140,7 @@ public class CrusherBlockEntity extends UpdatableBlockEntity implements Tickable
     }
 
     private boolean canOutput(ItemStack output) {
-        return this.wrappedInventoryStorage.getContainer(OUTPUT_SLOT_0).canAddItem(output) || this.wrappedInventoryStorage.getContainer(OUTPUT_SLOT_1).canAddItem(output);
+        return this.wrappedInventoryStorage.getContainer(OUTPUT_SLOT).canAddItem(output);
     }
 
     // TODO: Create getEnergy method instead of hardcoding 10
@@ -181,7 +186,7 @@ public class CrusherBlockEntity extends UpdatableBlockEntity implements Tickable
         var modidData = new CompoundTag();
         modidData.putInt("Progress", this.progress);
         modidData.putInt("MaxProgress", this.maxProgress);
-        modidData.putString("CurrentRecipeId", this.currentRecipeId.toString());
+        modidData.putString("CurrentRecipeId", this.currentRecipeId == null ? "" : this.currentRecipeId.toString());
         modidData.put("Inventory", this.wrappedInventoryStorage.writeNBT());
         modidData.put("Energy", this.wrappedEnergyStorage.writeNBT());
 
@@ -203,7 +208,7 @@ public class CrusherBlockEntity extends UpdatableBlockEntity implements Tickable
             this.maxProgress = modidData.getInt("MaxProgress");
 
         if (modidData.contains("CurrentRecipeId", CompoundTag.TAG_STRING))
-            this.currentRecipeId = new ResourceLocation(modidData.getString("CurrentRecipeId"));
+            this.currentRecipeId = ResourceLocation.tryParse(modidData.getString("CurrentRecipeId"));
 
         if (modidData.contains("Inventory", CompoundTag.TAG_LIST))
             this.wrappedInventoryStorage.readNBT(modidData.getList("Inventory", CompoundTag.TAG_COMPOUND));

@@ -1,0 +1,18 @@
+{
+  "type": "fabrictechmodtesting:crusher",
+  "input": {
+    "count": 1,
+    "ingredient": {
+      "item": "minecraft:iron_ore"
+    }
+  },
+  "output_a": {
+    "Count": 2,
+    "id": "minecraft:raw_iron"
+  },
+  "output_b": {
+    "Count": 1,
+    "id": "minecraft:iron_nugget"
+  },
+  "process_time": 200
+}

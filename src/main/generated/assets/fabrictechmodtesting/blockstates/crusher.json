@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "fabrictechmodtesting:block/crusher",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "fabrictechmodtesting:block/crusher"
+    },
+    "facing=south": {
+      "model": "fabrictechmodtesting:block/crusher",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "fabrictechmodtesting:block/crusher",
+      "y": 270
+    }
+  }
+}

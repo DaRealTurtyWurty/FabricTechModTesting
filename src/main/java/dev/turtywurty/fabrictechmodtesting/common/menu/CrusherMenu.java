@@ -50,9 +50,9 @@ public class CrusherMenu extends RecipeBookMenu<SimpleContainer> {
     }
 
     private void addOurSlots(WrappedInventoryStorage<SimpleContainer> wrappedStorage) {
-        addSlot(new Slot(wrappedStorage.getContainer(CrusherBlockEntity.INPUT_SLOT), 0, 56, 17));
-        addSlot(new OutputSlot(wrappedStorage.getContainer(CrusherBlockEntity.OUTPUT_SLOT_0), 0, 116, 17));
-        addSlot(new OutputSlot(wrappedStorage.getContainer(CrusherBlockEntity.OUTPUT_SLOT_1), 0, 116, 35));
+        addSlot(new Slot(wrappedStorage.getContainer(CrusherBlockEntity.INPUT_SLOT), 0, 44, 35));
+        addSlot(new OutputSlot(wrappedStorage.getContainer(CrusherBlockEntity.OUTPUT_SLOT), 0, 98, 35));
+        addSlot(new OutputSlot(wrappedStorage.getContainer(CrusherBlockEntity.OUTPUT_SLOT), 1, 115, 35));
     }
 
     private void addPlayerSlots(Inventory playerInv) {
@@ -136,8 +136,8 @@ public class CrusherMenu extends RecipeBookMenu<SimpleContainer> {
     @Override
     public void clearCraftingContent() {
         getSlot(CrusherBlockEntity.INPUT_SLOT).set(ItemStack.EMPTY);
-        getSlot(CrusherBlockEntity.OUTPUT_SLOT_0).set(ItemStack.EMPTY);
-        getSlot(CrusherBlockEntity.OUTPUT_SLOT_1).set(ItemStack.EMPTY);
+        getSlot(CrusherBlockEntity.OUTPUT_SLOT).set(ItemStack.EMPTY);
+        getSlot(CrusherBlockEntity.OUTPUT_SLOT + 1).set(ItemStack.EMPTY);
     }
 
     @Override
@@ -147,7 +147,7 @@ public class CrusherMenu extends RecipeBookMenu<SimpleContainer> {
 
     @Override
     public int getResultSlotIndex() {
-        return CrusherBlockEntity.OUTPUT_SLOT_0; // TODO: Find a way to make this work for multiple output slots
+        return CrusherBlockEntity.OUTPUT_SLOT; // TODO: Find a way to make this work for multiple output slots
     }
 
     @Override
@@ -172,7 +172,7 @@ public class CrusherMenu extends RecipeBookMenu<SimpleContainer> {
 
     @Override
     public boolean shouldMoveToInventory(int index) {
-        return index != CrusherBlockEntity.OUTPUT_SLOT_0 && index != CrusherBlockEntity.OUTPUT_SLOT_1;
+        return index != CrusherBlockEntity.OUTPUT_SLOT && index != CrusherBlockEntity.OUTPUT_SLOT + 1;
     }
 
     public CrusherBlockEntity getBlockEntity() {
