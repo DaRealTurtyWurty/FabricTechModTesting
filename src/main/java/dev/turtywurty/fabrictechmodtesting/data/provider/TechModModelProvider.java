@@ -18,6 +18,7 @@ public class TechModModelProvider extends FabricModelProvider {
     public void generateBlockStateModels(BlockModelGenerators blockStateModelGenerator) {
         blockStateModelGenerator.createTrivialCube(BlockInit.STEEL_BLOCK);
         blockStateModelGenerator.createFurnace(BlockInit.ALLOY_FURNACE, TexturedModel.ORIENTABLE_ONLY_TOP);
+        blockStateModelGenerator.createHorizontallyRotatedBlock(BlockInit.CRUSHER, TexturedModel.ORIENTABLE_ONLY_TOP); // TODO: Custom java model
     }
 
     @Override

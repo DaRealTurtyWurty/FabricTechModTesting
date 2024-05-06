@@ -13,5 +13,6 @@ public class TechModBlockLootTableProvider extends FabricBlockLootTableProvider 
     public void generate() {
         dropSelf(BlockInit.STEEL_BLOCK);
         dropSelf(BlockInit.ALLOY_FURNACE);
+        dropSelf(BlockInit.CRUSHER);
     }
 }

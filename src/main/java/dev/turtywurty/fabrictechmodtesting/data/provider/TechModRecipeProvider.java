@@ -5,6 +5,7 @@ import dev.turtywurty.fabrictechmodtesting.core.init.BlockInit;
 import dev.turtywurty.fabrictechmodtesting.core.init.ItemInit;
 import dev.turtywurty.fabrictechmodtesting.core.util.CountedIngredient;
 import dev.turtywurty.fabrictechmodtesting.data.builder.AlloyFurnaceRecipeBuilder;
+import dev.turtywurty.fabrictechmodtesting.data.builder.CrusherRecipeBuilder;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -16,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,20 +33,44 @@ public class TechModRecipeProvider extends FabricRecipeProvider {
     @Override
     public void buildRecipes(RecipeOutput output) {
         mineralBlockStorage(output, ItemInit.STEEL_INGOT, BlockInit.STEEL_BLOCK);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, BlockInit.ALLOY_FURNACE)
+                .define('I', Blocks.IRON_BLOCK)
+                .define('F', Items.FURNACE)
+                .pattern("III")
+                .pattern("IFI")
+                .pattern("III")
+                .group("alloy_furnace")
+                .unlockedBy(getHasName(BlockInit.STEEL_BLOCK), has(BlockInit.STEEL_BLOCK))
+                .save(output, FabricTechModTesting.id("alloy_furnace"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, BlockInit.CRUSHER)
+                .define('S', BlockInit.STEEL_BLOCK)
+                .define('A', Items.ANVIL)
+                .pattern("SSS")
+                .pattern("SAS")
+                .pattern("SSS")
+                .group("crusher")
+                .unlockedBy(getHasName(BlockInit.STEEL_BLOCK), has(BlockInit.STEEL_BLOCK))
+                .save(output, FabricTechModTesting.id("crusher"));
+
         alloyFurnaceRecipe(output, RecipeCategory.MISC,
                 CountedIngredient.of(8, Items.IRON_INGOT),
                 CountedIngredient.of(1, Items.COAL),
                 new ItemStack(ItemInit.STEEL_INGOT, 2),
                 200);
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, BlockInit.ALLOY_FURNACE)
-                .define('S', BlockInit.STEEL_BLOCK)
-                .define('F', Items.FURNACE)
-                .pattern("SSS")
-                .pattern("SFS")
-                .pattern("SSS")
-                .group("alloy_furnace")
-                .unlockedBy(getHasName(BlockInit.STEEL_BLOCK), has(BlockInit.STEEL_BLOCK))
-                .save(output, FabricTechModTesting.id("alloy_furnace"));
+
+        crusherRecipe(output, RecipeCategory.MISC,
+                CountedIngredient.of(1, Items.IRON_ORE),
+                new ItemStack(Items.RAW_IRON, 2),
+                new ItemStack(Items.IRON_NUGGET, 1),
+                200);
+
+        crusherRecipe(output, RecipeCategory.MISC,
+                CountedIngredient.of(1, Items.GOLD_ORE),
+                new ItemStack(Items.RAW_GOLD, 2),
+                new ItemStack(Items.GOLD_NUGGET, 1),
+                200);
     }
 
     private static void alloyFurnaceRecipe(RecipeOutput recipeOutput, RecipeCategory category, CountedIngredient inputA, CountedIngredient inputB, ItemStack output, int time) {
@@ -59,6 +85,22 @@ public class TechModRecipeProvider extends FabricRecipeProvider {
                 output,
                 time);
         builder.save(recipeOutput, FabricTechModTesting.id("alloy_" + name));
+    }
+
+    private static void crusherRecipe(RecipeOutput recipeOutput, RecipeCategory category, CountedIngredient input, ItemStack outputA, ItemStack outputB, int time) {
+        var builder = new CrusherRecipeBuilder(
+                category,
+                input,
+                outputA,
+                outputB,
+                time);
+
+        if(outputB.isEmpty()) {
+            builder.save(recipeOutput, FabricTechModTesting.id("crusher_" + getSimpleRecipeName(outputA.getItem())));
+            return;
+        }
+
+        builder.save(recipeOutput, FabricTechModTesting.id("crusher_" + getSimpleRecipeName(outputA.getItem()) + "_and_" + getSimpleRecipeName(outputB.getItem())));
     }
 
     public static void nineBlockStorageRecipes(

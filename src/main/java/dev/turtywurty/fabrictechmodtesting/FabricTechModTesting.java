@@ -1,6 +1,7 @@
 package dev.turtywurty.fabrictechmodtesting;
 
 import dev.turtywurty.fabrictechmodtesting.common.blockentity.AlloyFurnaceBlockEntity;
+import dev.turtywurty.fabrictechmodtesting.common.blockentity.CrusherBlockEntity;
 import dev.turtywurty.fabrictechmodtesting.core.init.*;
 import dev.turtywurty.fabrictechmodtesting.core.util.CountedIngredient;
 import net.fabricmc.api.ModInitializer;
@@ -9,6 +10,7 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import team.reborn.energy.api.EnergyStorage;
 
 public class FabricTechModTesting implements ModInitializer {
     public static final String MOD_ID = "fabrictechmodtesting";
@@ -29,6 +31,8 @@ public class FabricTechModTesting implements ModInitializer {
         CreativeTabInit.init();
         CustomIngredientSerializer.register(CountedIngredient.SERIALIZER);
 
-        ItemStorage.SIDED.registerForBlockEntity(AlloyFurnaceBlockEntity::getProviderHandler, BlockEntityTypeInit.ALLOY_FURNACE);
+        ItemStorage.SIDED.registerForBlockEntity(AlloyFurnaceBlockEntity::getInventoryProvider, BlockEntityTypeInit.ALLOY_FURNACE);
+        ItemStorage.SIDED.registerForBlockEntity(CrusherBlockEntity::getInventoryProvider, BlockEntityTypeInit.CRUSHER);
+        EnergyStorage.SIDED.registerForBlockEntity(CrusherBlockEntity::getEnergyProvider, BlockEntityTypeInit.CRUSHER);
     }
 }

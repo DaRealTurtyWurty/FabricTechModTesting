@@ -17,12 +17,14 @@ public abstract class RecipeBookTypeMixin {
     private static RecipeBookType[] $VALUES;
 
     private static final RecipeBookType ALLOY_FURNACE = fabrictechmodtesting$addVariant("ALLOY_FURNACE");
+    private static final RecipeBookType CRUSHER = fabrictechmodtesting$addVariant("CRUSHER");
 
     @Invoker("<init>")
     public static RecipeBookType fabrictechmodtesting$invokeInit(String internalName, int internalId) {
         throw new AssertionError();
     }
 
+    @SuppressWarnings("UnreachableCode") // IDEA doesn't know that mixins are applied at runtime
     @Unique
     private static RecipeBookType fabrictechmodtesting$addVariant(String internalName) {
         if(RecipeBookTypeMixin.$VALUES == null)

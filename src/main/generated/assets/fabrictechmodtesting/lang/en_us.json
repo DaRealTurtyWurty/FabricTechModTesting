@@ -1,7 +1,9 @@
 {
   "block.fabrictechmodtesting.alloy_furnace": "Alloy Furnace",
+  "block.fabrictechmodtesting.crusher": "Crusher",
   "block.fabrictechmodtesting.steel_block": "Block of Steel",
   "container.fabrictechmodtesting.alloy_furnace": "Alloy Furnace",
+  "container.fabrictechmodtesting.crusher": "Crusher",
   "fabrictechmodtesting:creative_tab": "Tech Mod Testing",
   "item.fabrictechmodtesting.steel_ingot": "Steel Ingot"
 }

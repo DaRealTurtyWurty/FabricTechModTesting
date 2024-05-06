@@ -1,9 +1,9 @@
 package dev.turtywurty.fabrictechmodtesting.common.menu;
 
-import dev.turtywurty.fabrictechmodtesting.common.blockentity.AlloyFurnaceBlockEntity;
+import dev.turtywurty.fabrictechmodtesting.common.blockentity.CrusherBlockEntity;
 import dev.turtywurty.fabrictechmodtesting.common.blockentity.util.WrappedInventoryStorage;
 import dev.turtywurty.fabrictechmodtesting.common.menu.slot.OutputSlot;
-import dev.turtywurty.fabrictechmodtesting.common.recipe.AlloyFurnaceRecipe;
+import dev.turtywurty.fabrictechmodtesting.common.recipe.CrusherRecipe;
 import dev.turtywurty.fabrictechmodtesting.core.init.BlockInit;
 import dev.turtywurty.fabrictechmodtesting.core.init.MenuTypeInit;
 import net.minecraft.network.FriendlyByteBuf;
@@ -19,27 +19,27 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
-public class AlloyFurnaceMenu extends RecipeBookMenu<SimpleContainer> {
-    private final AlloyFurnaceBlockEntity blockEntity;
+public class CrusherMenu extends RecipeBookMenu<SimpleContainer> {
+    private final CrusherBlockEntity blockEntity;
     private final ContainerLevelAccess levelAccess;
     private final ContainerData data;
 
-    public AlloyFurnaceMenu(int id, Inventory playerInv, FriendlyByteBuf buf) {
+    public CrusherMenu(int id, Inventory playerInv, FriendlyByteBuf buf) {
         this(id, playerInv, playerInv.player.level().getBlockEntity(buf.readBlockPos()), new SimpleContainerData(4));
     }
 
-    public AlloyFurnaceMenu(int id, Inventory playerInv, BlockEntity blockEntity, ContainerData data) {
-        super(MenuTypeInit.ALLOY_FURNACE, id);
-        if (!(blockEntity instanceof AlloyFurnaceBlockEntity alloyFurnaceBlockEntity))
-            throw new IllegalArgumentException("Block entity is not an instance of AlloyFurnaceBlockEntity!");
+    public CrusherMenu(int id, Inventory playerInv, BlockEntity blockEntity, ContainerData data) {
+        super(MenuTypeInit.CRUSHER, id);
+        if (!(blockEntity instanceof CrusherBlockEntity crusherBlockEntity))
+            throw new IllegalArgumentException("Block entity is not an instance of CrusherBlockEntity!");
 
-        WrappedInventoryStorage<SimpleContainer> wrappedStorage = alloyFurnaceBlockEntity.getWrappedStorage();
-        wrappedStorage.checkSize(4);
-        checkContainerDataCount(data, 4);
+        WrappedInventoryStorage<SimpleContainer> wrappedStorage = crusherBlockEntity.getInventoryStorage();
+        wrappedStorage.checkSize(3);
+        checkContainerDataCount(data, 2);
 
         wrappedStorage.startOpen(playerInv.player);
 
-        this.blockEntity = alloyFurnaceBlockEntity;
+        this.blockEntity = crusherBlockEntity;
         this.levelAccess = ContainerLevelAccess.create(this.blockEntity.getLevel(), this.blockEntity.getBlockPos());
         this.data = data;
 
@@ -50,15 +50,9 @@ public class AlloyFurnaceMenu extends RecipeBookMenu<SimpleContainer> {
     }
 
     private void addOurSlots(WrappedInventoryStorage<SimpleContainer> wrappedStorage) {
-        addSlot(new Slot(wrappedStorage.getContainer(AlloyFurnaceBlockEntity.INPUT_SLOT_0), 0, 42, 17));
-        addSlot(new Slot(wrappedStorage.getContainer(AlloyFurnaceBlockEntity.INPUT_SLOT_1), 0, 70, 17));
-        addSlot(new Slot(wrappedStorage.getContainer(AlloyFurnaceBlockEntity.FUEL_SLOT), 0, 56, 53) {
-            @Override
-            public boolean mayPlace(ItemStack stack) {
-                return this.container.canPlaceItem(0, stack);
-            }
-        });
-        addSlot(new OutputSlot(wrappedStorage.getContainer(AlloyFurnaceBlockEntity.OUTPUT_SLOT), 0, 116, 35));
+        addSlot(new Slot(wrappedStorage.getContainer(CrusherBlockEntity.INPUT_SLOT), 0, 44, 35));
+        addSlot(new OutputSlot(wrappedStorage.getContainer(CrusherBlockEntity.OUTPUT_SLOT), 0, 98, 35));
+        addSlot(new OutputSlot(wrappedStorage.getContainer(CrusherBlockEntity.OUTPUT_SLOT), 1, 116, 35));
     }
 
     private void addPlayerSlots(Inventory playerInv) {
@@ -88,11 +82,11 @@ public class AlloyFurnaceMenu extends RecipeBookMenu<SimpleContainer> {
             ItemStack slotStack = slot.getItem();
             itemStack = slotStack.copy();
 
-            if (slotIndex < 4) {
-                if (!moveItemStackTo(slotStack, 4, this.slots.size(), true)) {
+            if (slotIndex < 3) {
+                if (!moveItemStackTo(slotStack, 3, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!moveItemStackTo(slotStack, 0, 4, false)) {
+            } else if (!moveItemStackTo(slotStack, 0, 3, false)) {
                 return ItemStack.EMPTY;
             }
 
@@ -109,12 +103,12 @@ public class AlloyFurnaceMenu extends RecipeBookMenu<SimpleContainer> {
     @Override
     public void removed(Player player) {
         super.removed(player);
-        this.blockEntity.getWrappedStorage().stopOpen(player);
+        this.blockEntity.getInventoryStorage().stopOpen(player);
     }
 
     @Override
     public boolean stillValid(Player player) {
-        return stillValid(this.levelAccess, player, BlockInit.ALLOY_FURNACE);
+        return stillValid(this.levelAccess, player, BlockInit.CRUSHER);
     }
 
     public int getProgress() {
@@ -125,26 +119,9 @@ public class AlloyFurnaceMenu extends RecipeBookMenu<SimpleContainer> {
         return this.data.get(1);
     }
 
-    public int getBurnTime() {
-        return this.data.get(2);
-    }
-
-    public int getMaxBurnTime() {
-        return this.data.get(3);
-    }
-
     public float getProgressPercent() {
         float progress = getProgress();
         float maxProgress = getMaxProgress();
-        if (maxProgress == 0 || progress == 0)
-            return 0.0F;
-
-        return Mth.clamp(progress / maxProgress, 0.0F, 1.0F);
-    }
-
-    public float getBurnTimePercent() {
-        float progress = getBurnTime();
-        float maxProgress = getMaxBurnTime();
         if (maxProgress == 0 || progress == 0)
             return 0.0F;
 
@@ -158,9 +135,9 @@ public class AlloyFurnaceMenu extends RecipeBookMenu<SimpleContainer> {
 
     @Override
     public void clearCraftingContent() {
-        getSlot(AlloyFurnaceBlockEntity.INPUT_SLOT_0).set(ItemStack.EMPTY);
-        getSlot(AlloyFurnaceBlockEntity.INPUT_SLOT_1).set(ItemStack.EMPTY);
-        getSlot(AlloyFurnaceBlockEntity.OUTPUT_SLOT).set(ItemStack.EMPTY);
+        getSlot(CrusherBlockEntity.INPUT_SLOT).set(ItemStack.EMPTY);
+        getSlot(CrusherBlockEntity.OUTPUT_SLOT).set(ItemStack.EMPTY);
+        getSlot(CrusherBlockEntity.OUTPUT_SLOT + 1).set(ItemStack.EMPTY);
     }
 
     @Override
@@ -170,12 +147,12 @@ public class AlloyFurnaceMenu extends RecipeBookMenu<SimpleContainer> {
 
     @Override
     public int getResultSlotIndex() {
-        return AlloyFurnaceBlockEntity.OUTPUT_SLOT;
+        return CrusherBlockEntity.OUTPUT_SLOT; // TODO: Find a way to make this work for multiple output slots
     }
 
     @Override
     public int getGridWidth() {
-        return 2;
+        return 1;
     }
 
     @Override
@@ -185,24 +162,24 @@ public class AlloyFurnaceMenu extends RecipeBookMenu<SimpleContainer> {
 
     @Override
     public int getSize() {
-        return 4;
+        return 3;
     }
 
     @Override
     public @NotNull RecipeBookType getRecipeBookType() {
-        return RecipeBookType.valueOf("ALLOY_FURNACE");
+        return RecipeBookType.valueOf("CRUSHER");
     }
 
     @Override
-    public boolean shouldMoveToInventory(int slot) {
-        return slot != AlloyFurnaceBlockEntity.OUTPUT_SLOT;
+    public boolean shouldMoveToInventory(int index) {
+        return index != CrusherBlockEntity.OUTPUT_SLOT && index != CrusherBlockEntity.OUTPUT_SLOT + 1;
     }
 
-    public AlloyFurnaceBlockEntity getBlockEntity() {
+    public CrusherBlockEntity getBlockEntity() {
         return blockEntity;
     }
 
-    public void setRecipeUsed(RecipeHolder<AlloyFurnaceRecipe> matchingRecipe) {
+    public void setRecipeUsed(RecipeHolder<CrusherRecipe> matchingRecipe) {
         // TODO: Figure out what to do here
     }
 }

@@ -34,6 +34,17 @@ public class RecipeBookCategoriesMixin {
     @Unique
     private static final List<RecipeBookCategories> ALLOY_FURNACE_CATEGORIES = ImmutableList.of(ALLOY_FURNACE);
 
+    @Unique
+    private static final RecipeBookCategories CRUSHER =
+            fabrictechmodtesting$addVariant("CRUSHER", new ItemStack(ItemInit.STEEL_INGOT));
+
+    @Unique
+    private static final RecipeBookCategories CRUSHER_SEARCH =
+            fabrictechmodtesting$addVariant("CRUSHER_SEARCH", new ItemStack(Items.COMPASS));
+
+    @Unique
+    private static final List<RecipeBookCategories> CRUSHER_CATEGORIES = ImmutableList.of(CRUSHER);
+
     @Shadow
     @Mutable
     @Final
@@ -42,6 +53,7 @@ public class RecipeBookCategoriesMixin {
     static {
         Map<RecipeBookCategories, List<RecipeBookCategories>> mutableCopy = new HashMap<>(AGGREGATE_CATEGORIES);
         mutableCopy.put(ALLOY_FURNACE_SEARCH, ImmutableList.of(ALLOY_FURNACE));
+        mutableCopy.put(CRUSHER_SEARCH, ImmutableList.of(CRUSHER));
         AGGREGATE_CATEGORIES = ImmutableMap.copyOf(mutableCopy);
     }
 
@@ -50,6 +62,7 @@ public class RecipeBookCategoriesMixin {
         throw new AssertionError();
     }
 
+    @SuppressWarnings("UnreachableCode") // IDEA doesn't know that mixins are applied at runtime
     @Unique
     private static RecipeBookCategories fabrictechmodtesting$addVariant(String internalName, ItemStack... stacks) {
         if (RecipeBookCategoriesMixin.$VALUES == null)
@@ -66,6 +79,10 @@ public class RecipeBookCategoriesMixin {
     private static void fabrictechmodtesting$addAlloyFurnaceCategory(RecipeBookType recipeBookType, CallbackInfoReturnable<List<RecipeBookCategories>> callback) {
         if (recipeBookType == RecipeBookType.valueOf("ALLOY_FURNACE")) {
             callback.setReturnValue(ALLOY_FURNACE_CATEGORIES);
+        }
+
+        if (recipeBookType == RecipeBookType.valueOf("CRUSHER")) {
+            callback.setReturnValue(CRUSHER_CATEGORIES);
         }
     }
 }

@@ -6,14 +6,14 @@
     "F": {
       "item": "minecraft:furnace"
     },
-    "S": {
-      "item": "fabrictechmodtesting:steel_block"
+    "I": {
+      "item": "minecraft:iron_block"
     }
   },
   "pattern": [
-    "SSS",
-    "SFS",
-    "SSS"
+    "III",
+    "IFI",
+    "III"
   ],
   "result": {
     "item": "fabrictechmodtesting:alloy_furnace"

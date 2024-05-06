@@ -1,6 +1,7 @@
 package dev.turtywurty.fabrictechmodtesting.data.provider;
 
 import dev.turtywurty.fabrictechmodtesting.common.blockentity.AlloyFurnaceBlockEntity;
+import dev.turtywurty.fabrictechmodtesting.common.blockentity.CrusherBlockEntity;
 import dev.turtywurty.fabrictechmodtesting.core.init.BlockInit;
 import dev.turtywurty.fabrictechmodtesting.core.init.CreativeTabInit;
 import dev.turtywurty.fabrictechmodtesting.core.init.ItemInit;
@@ -26,9 +27,13 @@ public class TechModLanguageProvider extends FabricLanguageProvider {
         // Blocks
         translationBuilder.add(BlockInit.STEEL_BLOCK, "Block of Steel");
         translationBuilder.add(BlockInit.ALLOY_FURNACE, "Alloy Furnace");
+        translationBuilder.add(BlockInit.CRUSHER, "Crusher");
 
         // Screens
         addComponent(translationBuilder, AlloyFurnaceBlockEntity.TITLE, "Alloy Furnace");
+        addComponent(translationBuilder, CrusherBlockEntity.TITLE, "Crusher");
+
+        // Creative Tabs
         addComponent(translationBuilder, CreativeTabInit.TAB_TITLE, "Tech Mod Testing");
     }
 }
