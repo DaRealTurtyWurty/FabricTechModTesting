@@ -3,7 +3,6 @@ package dev.turtywurty.fabrictechmodtesting.common.blockentity;
 import dev.turtywurty.fabrictechmodtesting.FabricTechModTesting;
 import dev.turtywurty.fabrictechmodtesting.common.blockentity.util.*;
 import dev.turtywurty.fabrictechmodtesting.common.menu.CrusherMenu;
-import dev.turtywurty.fabrictechmodtesting.common.recipe.AlloyFurnaceRecipe;
 import dev.turtywurty.fabrictechmodtesting.common.recipe.CrusherRecipe;
 import dev.turtywurty.fabrictechmodtesting.core.init.BlockEntityTypeInit;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -70,7 +69,7 @@ public class CrusherBlockEntity extends UpdatableBlockEntity implements Tickable
     private ResourceLocation currentRecipeId;
 
     public CrusherBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(BlockEntityTypeInit.ALLOY_FURNACE, blockPos, blockState);
+        super(BlockEntityTypeInit.CRUSHER, blockPos, blockState);
 
         this.wrappedInventoryStorage.addContainer(new SyncingSimpleContainer(this, 1), Direction.UP);
         this.wrappedInventoryStorage.addContainer(new SyncingSimpleContainer(this, 2), Direction.DOWN);
@@ -91,7 +90,10 @@ public class CrusherBlockEntity extends UpdatableBlockEntity implements Tickable
         if (this.level == null || this.level.isClientSide)
             return;
 
-        this.wrappedEnergyStorage.getStorage(Direction.SOUTH).insert(1000, Transaction.openOuter());
+        try(Transaction transaction = Transaction.openOuter()) {
+            this.wrappedEnergyStorage.getStorage(Direction.SOUTH).insert(1000, transaction);
+            transaction.commit();
+        }
 
         if (this.currentRecipeId == null) {
             Optional<RecipeHolder<CrusherRecipe>> recipeHolder = getCurrentRecipe();
@@ -145,19 +147,12 @@ public class CrusherBlockEntity extends UpdatableBlockEntity implements Tickable
 
     // TODO: Create getEnergy method instead of hardcoding 10
     private boolean hasEnergy() {
-        try (Transaction transaction = Transaction.openOuter()) {
-            boolean has = this.wrappedEnergyStorage.getStorage(Direction.SOUTH).extract(10, transaction) == 10;
-            transaction.abort();
-            return has;
-        }
+        return this.wrappedEnergyStorage.getStorage(Direction.SOUTH).getAmount() >= 10;
     }
 
     // TODO: Create getEnergy method instead of hardcoding 10
     private void consumeEnergy() {
-        try (Transaction transaction = Transaction.openOuter()) {
-            this.wrappedEnergyStorage.getStorage(Direction.SOUTH).extract(10, transaction);
-            transaction.commit();
-        }
+        this.wrappedEnergyStorage.getStorage(Direction.SOUTH).amount -= 10;
     }
 
     private void reset() {

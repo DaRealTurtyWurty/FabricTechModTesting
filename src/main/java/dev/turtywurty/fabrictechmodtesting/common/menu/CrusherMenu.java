@@ -52,7 +52,7 @@ public class CrusherMenu extends RecipeBookMenu<SimpleContainer> {
     private void addOurSlots(WrappedInventoryStorage<SimpleContainer> wrappedStorage) {
         addSlot(new Slot(wrappedStorage.getContainer(CrusherBlockEntity.INPUT_SLOT), 0, 44, 35));
         addSlot(new OutputSlot(wrappedStorage.getContainer(CrusherBlockEntity.OUTPUT_SLOT), 0, 98, 35));
-        addSlot(new OutputSlot(wrappedStorage.getContainer(CrusherBlockEntity.OUTPUT_SLOT), 1, 115, 35));
+        addSlot(new OutputSlot(wrappedStorage.getContainer(CrusherBlockEntity.OUTPUT_SLOT), 1, 116, 35));
     }
 
     private void addPlayerSlots(Inventory playerInv) {
