@@ -23,7 +23,7 @@ public class ClientRecipeBookMixin {
             callback.setReturnValue(RecipeBookCategories.valueOf("ALLOY_FURNACE"));
         }
 
-        if(recipeHolder.value() instanceof CrusherRecipe) {
+        if (recipeHolder.value() instanceof CrusherRecipe) {
             callback.setReturnValue(RecipeBookCategories.valueOf("CRUSHER"));
         }
     }

@@ -21,7 +21,7 @@ public class AlloyFurnaceDisplay extends BasicDisplay {
     }
 
     private static List<EntryIngredient> getInputs(RecipeHolder<AlloyFurnaceRecipe> recipeHolder) {
-        if(recipeHolder == null) return List.of();
+        if (recipeHolder == null) return List.of();
 
         AlloyFurnaceRecipe recipe = recipeHolder.value();
         List<EntryIngredient> inputs = new ArrayList<>();
@@ -33,7 +33,7 @@ public class AlloyFurnaceDisplay extends BasicDisplay {
     }
 
     private static List<EntryIngredient> getOutputs(RecipeHolder<AlloyFurnaceRecipe> recipeHolder) {
-        if(recipeHolder == null) return List.of();
+        if (recipeHolder == null) return List.of();
 
         AlloyFurnaceRecipe recipe = recipeHolder.value();
         List<EntryIngredient> outputs = new ArrayList<>();

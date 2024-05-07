@@ -128,6 +128,23 @@ public class CrusherMenu extends RecipeBookMenu<SimpleContainer> {
         return Mth.clamp(progress / maxProgress, 0.0F, 1.0F);
     }
 
+    public long getEnergy() {
+        return this.blockEntity.getEnergy().getAmount();
+    }
+
+    public long getMaxEnergy() {
+        return this.blockEntity.getEnergy().getCapacity();
+    }
+
+    public float getEnergyPercent() {
+        long energy = getEnergy();
+        long maxEnergy = getMaxEnergy();
+        if (maxEnergy == 0 || energy == 0)
+            return 0.0F;
+
+        return Math.max(0, Math.min(1.0F, (float) energy / maxEnergy));
+    }
+
     @Override
     public void fillCraftSlotsStackedContents(StackedContents stackedContents) {
         this.blockEntity.getInventory().fillStackedContents(stackedContents);

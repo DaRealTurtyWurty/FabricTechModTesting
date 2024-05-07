@@ -27,7 +27,7 @@ public abstract class RecipeBookTypeMixin {
     @SuppressWarnings("UnreachableCode") // IDEA doesn't know that mixins are applied at runtime
     @Unique
     private static RecipeBookType fabrictechmodtesting$addVariant(String internalName) {
-        if(RecipeBookTypeMixin.$VALUES == null)
+        if (RecipeBookTypeMixin.$VALUES == null)
             throw new IllegalStateException("RecipeBookTypeMixin.$VALUES is null!");
 
         List<RecipeBookType> variants = new ArrayList<>(Arrays.asList(RecipeBookTypeMixin.$VALUES));

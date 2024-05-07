@@ -58,7 +58,7 @@ public class AlloyFurnaceCategory implements IRecipeCategory<AlloyFurnaceRecipe>
     public void setRecipe(IRecipeLayoutBuilder builder, AlloyFurnaceRecipe recipe, IFocusGroup focuses) {
         NonNullList<Ingredient> ingredients = recipe.getIngredients();
         int startIndex = 1;
-        if(ingredients.size() < 3) {
+        if (ingredients.size() < 3) {
             startIndex = 0;
         }
 

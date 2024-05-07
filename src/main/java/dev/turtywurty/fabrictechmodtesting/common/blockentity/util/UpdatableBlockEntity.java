@@ -14,8 +14,8 @@ public abstract class UpdatableBlockEntity extends BlockEntity {
     public void update() {
         setChanged();
 
-        if(this.level != null) {
-            this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
+        if (this.level != null) {
+            this.level.sendBlockUpdated(this.worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
     }
 }

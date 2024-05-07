@@ -7,7 +7,6 @@ import dev.turtywurty.fabrictechmodtesting.common.recipe.CrusherRecipe;
 import dev.turtywurty.fabrictechmodtesting.core.init.BlockEntityTypeInit;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -39,7 +38,7 @@ public class CrusherBlockEntity extends UpdatableBlockEntity implements Tickable
 
     private final WrappedInventoryStorage<SimpleContainer> wrappedInventoryStorage = new WrappedInventoryStorage<>();
     private final WrappedEnergyStorage wrappedEnergyStorage = new WrappedEnergyStorage();
-
+    private int progress, maxProgress;
     private final ContainerData containerData = new ContainerData() {
         @Override
         public int get(int value) {
@@ -64,8 +63,6 @@ public class CrusherBlockEntity extends UpdatableBlockEntity implements Tickable
             return 2;
         }
     };
-
-    private int progress, maxProgress;
     private ResourceLocation currentRecipeId;
 
     public CrusherBlockEntity(BlockPos blockPos, BlockState blockState) {
@@ -85,15 +82,14 @@ public class CrusherBlockEntity extends UpdatableBlockEntity implements Tickable
         return this.wrappedEnergyStorage.getStorage(direction);
     }
 
+    public EnergyStorage getEnergy() {
+        return this.wrappedEnergyStorage.getStorage(Direction.SOUTH);
+    }
+
     @Override
     public void tick() {
         if (this.level == null || this.level.isClientSide)
             return;
-
-        try(Transaction transaction = Transaction.openOuter()) {
-            this.wrappedEnergyStorage.getStorage(Direction.SOUTH).insert(1000, transaction);
-            transaction.commit();
-        }
 
         if (this.currentRecipeId == null) {
             Optional<RecipeHolder<CrusherRecipe>> recipeHolder = getCurrentRecipe();
@@ -221,7 +217,7 @@ public class CrusherBlockEntity extends UpdatableBlockEntity implements Tickable
     @Override
     public @NotNull CompoundTag getUpdateTag() {
         CompoundTag tag = super.getUpdateTag();
-        load(tag);
+        saveAdditional(tag);
         return tag;
     }
 

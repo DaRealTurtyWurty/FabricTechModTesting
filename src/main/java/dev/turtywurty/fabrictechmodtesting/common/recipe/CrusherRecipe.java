@@ -19,7 +19,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 // TODO: Re-define this to have the outputs use random or predetermined chances
-public record CrusherRecipe(CountedIngredient input, ItemStack outputA, ItemStack outputB, int processTime) implements Recipe<SimpleContainer>, CountedIngredient.CountedIngredientRecipe {
+public record CrusherRecipe(CountedIngredient input, ItemStack outputA, ItemStack outputB,
+                            int processTime) implements Recipe<SimpleContainer>, CountedIngredient.CountedIngredientRecipe {
     @Override
     public boolean matches(SimpleContainer container, Level level) {
         return this.input.test(container.getItem(CrusherBlockEntity.INPUT_SLOT));

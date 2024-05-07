@@ -19,36 +19,29 @@ import java.util.*;
 @Unique
 public class RecipeBookCategoriesMixin {
     @Shadow
-    @Final
-    @Mutable
-    private static RecipeBookCategories[] $VALUES;
-
-    @Unique
-    private static final RecipeBookCategories ALLOY_FURNACE =
-            fabrictechmodtesting$addVariant("ALLOY_FURNACE", new ItemStack(ItemInit.STEEL_INGOT));
-
-    @Unique
-    private static final RecipeBookCategories ALLOY_FURNACE_SEARCH =
-            fabrictechmodtesting$addVariant("ALLOY_FURNACE_SEARCH", new ItemStack(Items.COMPASS));
-
-    @Unique
-    private static final List<RecipeBookCategories> ALLOY_FURNACE_CATEGORIES = ImmutableList.of(ALLOY_FURNACE);
-
-    @Unique
-    private static final RecipeBookCategories CRUSHER =
-            fabrictechmodtesting$addVariant("CRUSHER", new ItemStack(ItemInit.STEEL_INGOT));
-
-    @Unique
-    private static final RecipeBookCategories CRUSHER_SEARCH =
-            fabrictechmodtesting$addVariant("CRUSHER_SEARCH", new ItemStack(Items.COMPASS));
-
-    @Unique
-    private static final List<RecipeBookCategories> CRUSHER_CATEGORIES = ImmutableList.of(CRUSHER);
-
-    @Shadow
     @Mutable
     @Final
     public static Map<RecipeBookCategories, List<RecipeBookCategories>> AGGREGATE_CATEGORIES;
+    @Shadow
+    @Final
+    @Mutable
+    private static RecipeBookCategories[] $VALUES;
+    @Unique
+    private static final RecipeBookCategories ALLOY_FURNACE =
+            fabrictechmodtesting$addVariant("ALLOY_FURNACE", new ItemStack(ItemInit.STEEL_INGOT));
+    @Unique
+    private static final List<RecipeBookCategories> ALLOY_FURNACE_CATEGORIES = ImmutableList.of(ALLOY_FURNACE);
+    @Unique
+    private static final RecipeBookCategories ALLOY_FURNACE_SEARCH =
+            fabrictechmodtesting$addVariant("ALLOY_FURNACE_SEARCH", new ItemStack(Items.COMPASS));
+    @Unique
+    private static final RecipeBookCategories CRUSHER =
+            fabrictechmodtesting$addVariant("CRUSHER", new ItemStack(ItemInit.STEEL_INGOT));
+    @Unique
+    private static final List<RecipeBookCategories> CRUSHER_CATEGORIES = ImmutableList.of(CRUSHER);
+    @Unique
+    private static final RecipeBookCategories CRUSHER_SEARCH =
+            fabrictechmodtesting$addVariant("CRUSHER_SEARCH", new ItemStack(Items.COMPASS));
 
     static {
         Map<RecipeBookCategories, List<RecipeBookCategories>> mutableCopy = new HashMap<>(AGGREGATE_CATEGORIES);

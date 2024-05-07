@@ -5,7 +5,7 @@ import team.reborn.energy.api.base.SimpleEnergyStorage;
 public class SyncingEnergyStorage extends SimpleEnergyStorage {
     private final UpdatableBlockEntity blockEntity;
 
-    public SyncingEnergyStorage(UpdatableBlockEntity blockEntity, int capacity, int maxInput, int maxOutput) {
+    public SyncingEnergyStorage(UpdatableBlockEntity blockEntity, long capacity, long maxInput, long maxOutput) {
         super(capacity, maxInput, maxOutput);
         this.blockEntity = blockEntity;
     }

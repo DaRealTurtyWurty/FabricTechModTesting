@@ -16,7 +16,7 @@ public class TechModLanguageProvider extends FabricLanguageProvider {
     }
 
     private static void addComponent(TranslationBuilder builder, Component key, String value) {
-        builder.add(((TranslatableContents)key.getContents()).getKey(), value);
+        builder.add(((TranslatableContents) key.getContents()).getKey(), value);
     }
 
     @Override

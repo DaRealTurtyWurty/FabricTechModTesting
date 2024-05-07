@@ -25,9 +25,6 @@ public abstract class ServerPlaceRecipeMixin {
     @Shadow
     protected Inventory inventory;
 
-    @Shadow
-    protected abstract void clearGrid();
-
     // Find the stack with the closest count to the ingredient's count
     @Unique
     private static @Nullable ItemStack fabrictechmodtesting$findClosestMatchingStack(Inventory inventory, List<Integer> ignoreList, CountedIngredient ingredient) {
@@ -59,6 +56,9 @@ public abstract class ServerPlaceRecipeMixin {
         return closestStack;
     }
 
+    @Shadow
+    protected abstract void clearGrid();
+
     @Inject(
             method = "recipeClicked",
             at = @At(
@@ -89,13 +89,13 @@ public abstract class ServerPlaceRecipeMixin {
                 return;
             }
 
-            if(stack.isEmpty()) {
+            if (stack.isEmpty()) {
                 matches.add(ItemStack.EMPTY);
                 continue;
             }
 
             // check to see if the container can take that count
-            if(!slot.mayPlace(stack.copyWithCount(ingredient.count()))) {
+            if (!slot.mayPlace(stack.copyWithCount(ingredient.count()))) {
                 clearGrid();
                 serverPlayer.connection.send(new ClientboundPlaceGhostRecipePacket(serverPlayer.containerMenu.containerId, recipeHolder));
                 this.inventory.setChanged();
@@ -106,7 +106,7 @@ public abstract class ServerPlaceRecipeMixin {
             matches.add(stack);
         }
 
-        if(matches.size() != ingredients.size()) {
+        if (matches.size() != ingredients.size()) {
             clearGrid();
             serverPlayer.connection.send(new ClientboundPlaceGhostRecipePacket(serverPlayer.containerMenu.containerId, recipeHolder));
         } else { // If all ingredients are found

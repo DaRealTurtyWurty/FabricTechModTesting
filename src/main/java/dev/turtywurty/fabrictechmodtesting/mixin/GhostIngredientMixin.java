@@ -28,7 +28,7 @@ public abstract class GhostIngredientMixin {
     @Inject(method = "getItem", at = @At("HEAD"), cancellable = true)
     private void fabrictechmodtesting$getItem(CallbackInfoReturnable<ItemStack> callback) {
         CustomIngredient customIngredient = this.ingredient.getCustomIngredient();
-        if(customIngredient instanceof CountedIngredient countedIngredient) {
+        if (customIngredient instanceof CountedIngredient countedIngredient) {
             List<ItemStack> itemStacks = countedIngredient.getMatchingStacks();
             callback.setReturnValue(itemStacks.isEmpty() ? ItemStack.EMPTY : itemStacks.get(Mth.floor(ghostRecipe.time / 30.0F) % itemStacks.size()));
         }

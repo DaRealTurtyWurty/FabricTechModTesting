@@ -23,6 +23,20 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class AlloyFurnaceTransferHandler implements IRecipeTransferHandler<AlloyFurnaceMenu, AlloyFurnaceRecipe> {
+    public static NonNullList<ItemStack> getFirstItemStacks(IRecipeSlotsView recipeSlots) {
+        List<IRecipeSlotView> slotViews = recipeSlots.getSlotViews(RecipeIngredientRole.INPUT);
+        return slotViews.stream()
+                .map(AlloyFurnaceTransferHandler::getFirstItemStack)
+                .collect(Collectors.toCollection(NonNullList::create));
+    }
+
+    private static ItemStack getFirstItemStack(IRecipeSlotView slotView) {
+        return slotView.getDisplayedIngredient(VanillaTypes.ITEM_STACK)
+                .or(() -> slotView.getIngredients(VanillaTypes.ITEM_STACK).findFirst())
+                .map(ItemStack::copy)
+                .orElse(ItemStack.EMPTY);
+    }
+
     @Override
     public @NotNull Class<? extends AlloyFurnaceMenu> getContainerClass() {
         return AlloyFurnaceMenu.class;
@@ -41,7 +55,7 @@ public class AlloyFurnaceTransferHandler implements IRecipeTransferHandler<Alloy
     @Override
     public @Nullable IRecipeTransferError transferRecipe(AlloyFurnaceMenu container, AlloyFurnaceRecipe recipe, IRecipeSlotsView recipeSlots,
                                                          Player player, boolean maxTransfer, boolean doTransfer) {
-        if(doTransfer) {
+        if (doTransfer) {
             NonNullList<ItemStack> firstItemStacks = getFirstItemStacks(recipeSlots);
             for (int i = 0; i < firstItemStacks.size(); i++) {
                 container.setItem(i, container.incrementStateId(), firstItemStacks.get(i));
@@ -62,19 +76,5 @@ public class AlloyFurnaceTransferHandler implements IRecipeTransferHandler<Alloy
         }
 
         return null;
-    }
-
-    public static NonNullList<ItemStack> getFirstItemStacks(IRecipeSlotsView recipeSlots) {
-        List<IRecipeSlotView> slotViews = recipeSlots.getSlotViews(RecipeIngredientRole.INPUT);
-        return slotViews.stream()
-                .map(AlloyFurnaceTransferHandler::getFirstItemStack)
-                .collect(Collectors.toCollection(NonNullList::create));
-    }
-
-    private static ItemStack getFirstItemStack(IRecipeSlotView slotView) {
-        return slotView.getDisplayedIngredient(VanillaTypes.ITEM_STACK)
-                .or(() -> slotView.getIngredients(VanillaTypes.ITEM_STACK).findFirst())
-                .map(ItemStack::copy)
-                .orElse(ItemStack.EMPTY);
     }
 }

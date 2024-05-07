@@ -5,12 +5,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.turtywurty.fabrictechmodtesting.FabricTechModTesting;
 import dev.turtywurty.fabrictechmodtesting.common.blockentity.AlloyFurnaceBlockEntity;
 import dev.turtywurty.fabrictechmodtesting.core.util.CountedIngredient;
-import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -73,7 +71,7 @@ public record AlloyFurnaceRecipe(CountedIngredient inputA, CountedIngredient inp
 
     @Override
     public int getRealSlotIndex(int index) {
-        if(index == 0) return AlloyFurnaceBlockEntity.FUEL_SLOT;
+        if (index == 0) return AlloyFurnaceBlockEntity.FUEL_SLOT;
         return index - 1;
     }
 

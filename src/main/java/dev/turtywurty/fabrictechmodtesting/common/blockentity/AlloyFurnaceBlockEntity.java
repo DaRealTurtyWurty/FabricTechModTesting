@@ -35,11 +35,8 @@ import java.util.Optional;
 public class AlloyFurnaceBlockEntity extends UpdatableBlockEntity implements TickableBlockEntity, ExtendedScreenHandlerFactory {
     public static final Component TITLE = Component.translatable("container." + FabricTechModTesting.MOD_ID + ".alloy_furnace");
     public static final int INPUT_SLOT_0 = 0, INPUT_SLOT_1 = 1, FUEL_SLOT = 2, OUTPUT_SLOT = 3;
-
-    private int progress, maxProgress, burnTime, maxBurnTime;
-    private ResourceLocation currentRecipeId;
-
     private final WrappedInventoryStorage<SimpleContainer> wrappedInventoryStorage = new WrappedInventoryStorage<>();
+    private int progress, maxProgress, burnTime, maxBurnTime;
     private final ContainerData containerData = new ContainerData() {
         @Override
         public int get(int index) {
@@ -67,6 +64,7 @@ public class AlloyFurnaceBlockEntity extends UpdatableBlockEntity implements Tic
             return 4;
         }
     };
+    private ResourceLocation currentRecipeId;
 
     public AlloyFurnaceBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(BlockEntityTypeInit.ALLOY_FURNACE, blockPos, blockState);
@@ -77,12 +75,12 @@ public class AlloyFurnaceBlockEntity extends UpdatableBlockEntity implements Tic
         this.wrappedInventoryStorage.addContainer(new OutputSimpleContainer(this, 1), Direction.DOWN);
     }
 
-    public InventoryStorage getInventoryProvider(Direction direction) {
-        return this.wrappedInventoryStorage.getStorage(direction);
-    }
-
     public static boolean isFuel(ItemStack stack) {
         return FurnaceBlockEntity.isFuel(stack);
+    }
+
+    public InventoryStorage getInventoryProvider(Direction direction) {
+        return this.wrappedInventoryStorage.getStorage(direction);
     }
 
     @Override
@@ -115,7 +113,7 @@ public class AlloyFurnaceBlockEntity extends UpdatableBlockEntity implements Tic
 
         if (this.burnTime <= 0) {
             ItemStack fuel = this.wrappedInventoryStorage.getContainer(FUEL_SLOT).getItem(0);
-            if(isFuel(fuel)) {
+            if (isFuel(fuel)) {
                 int burnTime = getBurnTime(fuel);
                 this.maxBurnTime = burnTime;
                 this.burnTime = burnTime;
@@ -222,7 +220,7 @@ public class AlloyFurnaceBlockEntity extends UpdatableBlockEntity implements Tic
     @Override
     public @NotNull CompoundTag getUpdateTag() {
         CompoundTag tag = super.getUpdateTag();
-        load(tag);
+        saveAdditional(tag);
         return tag;
     }
 

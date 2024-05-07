@@ -17,7 +17,7 @@ public class RecipeBookSettingsMixin {
     @Shadow
     private Map<RecipeBookType, RecipeBookSettings.TypeSettings> states;
 
-    @Inject(method="<init>(Ljava/util/Map;)V", at=@At("TAIL"))
+    @Inject(method = "<init>(Ljava/util/Map;)V", at = @At("TAIL"))
     private void fabrictechmodtesting$init(CallbackInfo callback) {
         this.states.put(RecipeBookType.valueOf("ALLOY_FURNACE"), new RecipeBookSettings.TypeSettings(false, false));
         this.states.put(RecipeBookType.valueOf("CRUSHER"), new RecipeBookSettings.TypeSettings(false, false));
