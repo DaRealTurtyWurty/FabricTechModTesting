@@ -1,8 +1,14 @@
 {
+  "block.fabrictechmodtesting.advanced_battery": "Advanced Battery",
   "block.fabrictechmodtesting.alloy_furnace": "Alloy Furnace",
+  "block.fabrictechmodtesting.basic_battery": "Basic Battery",
+  "block.fabrictechmodtesting.combustion_generator": "Combustion Generator",
   "block.fabrictechmodtesting.crusher": "Crusher",
+  "block.fabrictechmodtesting.elite_battery": "Elite Battery",
   "block.fabrictechmodtesting.steel_block": "Block of Steel",
+  "block.fabrictechmodtesting.ultimate_battery": "Ultimate Battery",
   "container.fabrictechmodtesting.alloy_furnace": "Alloy Furnace",
+  "container.fabrictechmodtesting.combustion_generator": "Combustion Generator",
   "container.fabrictechmodtesting.crusher": "Crusher",
   "fabrictechmodtesting:creative_tab": "Tech Mod Testing",
   "item.fabrictechmodtesting.steel_ingot": "Steel Ingot"

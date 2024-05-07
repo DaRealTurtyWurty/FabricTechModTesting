@@ -14,5 +14,10 @@ public class TechModBlockLootTableProvider extends FabricBlockLootTableProvider 
         dropSelf(BlockInit.STEEL_BLOCK);
         dropSelf(BlockInit.ALLOY_FURNACE);
         dropSelf(BlockInit.CRUSHER);
+        dropSelf(BlockInit.BASIC_BATTERY);
+        dropSelf(BlockInit.ADVANCED_BATTERY);
+        dropSelf(BlockInit.ELITE_BATTERY);
+        dropSelf(BlockInit.ULTIMATE_BATTERY);
+        dropSelf(BlockInit.COMBUSTION_GENERATOR);
     }
 }

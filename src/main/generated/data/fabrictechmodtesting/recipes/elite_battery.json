@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "elite_battery",
+  "key": {
+    "B": {
+      "item": "fabrictechmodtesting:advanced_battery"
+    },
+    "E": {
+      "item": "minecraft:emerald"
+    }
+  },
+  "pattern": [
+    "EBE",
+    "B B",
+    "EBE"
+  ],
+  "result": {
+    "item": "fabrictechmodtesting:elite_battery"
+  }
+}

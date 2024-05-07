@@ -1,6 +1,7 @@
 package dev.turtywurty.fabrictechmodtesting.data.provider;
 
 import dev.turtywurty.fabrictechmodtesting.common.blockentity.AlloyFurnaceBlockEntity;
+import dev.turtywurty.fabrictechmodtesting.common.blockentity.CombustionGeneratorBlockEntity;
 import dev.turtywurty.fabrictechmodtesting.common.blockentity.CrusherBlockEntity;
 import dev.turtywurty.fabrictechmodtesting.core.init.BlockInit;
 import dev.turtywurty.fabrictechmodtesting.core.init.CreativeTabInit;
@@ -28,10 +29,16 @@ public class TechModLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(BlockInit.STEEL_BLOCK, "Block of Steel");
         translationBuilder.add(BlockInit.ALLOY_FURNACE, "Alloy Furnace");
         translationBuilder.add(BlockInit.CRUSHER, "Crusher");
+        translationBuilder.add(BlockInit.BASIC_BATTERY, "Basic Battery");
+        translationBuilder.add(BlockInit.ADVANCED_BATTERY, "Advanced Battery");
+        translationBuilder.add(BlockInit.ELITE_BATTERY, "Elite Battery");
+        translationBuilder.add(BlockInit.ULTIMATE_BATTERY, "Ultimate Battery");
+        translationBuilder.add(BlockInit.COMBUSTION_GENERATOR, "Combustion Generator");
 
         // Screens
         addComponent(translationBuilder, AlloyFurnaceBlockEntity.TITLE, "Alloy Furnace");
         addComponent(translationBuilder, CrusherBlockEntity.TITLE, "Crusher");
+        addComponent(translationBuilder, CombustionGeneratorBlockEntity.TITLE, "Combustion Generator");
 
         // Creative Tabs
         addComponent(translationBuilder, CreativeTabInit.TAB_TITLE, "Tech Mod Testing");

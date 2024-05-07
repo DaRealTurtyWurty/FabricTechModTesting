@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "fabrictechmodtesting:block/combustion_generator_front_on",
+    "side": "fabrictechmodtesting:block/combustion_generator_side",
+    "top": "fabrictechmodtesting:block/combustion_generator_top"
+  }
+}

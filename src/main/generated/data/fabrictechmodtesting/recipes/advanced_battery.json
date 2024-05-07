@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "advanced_battery",
+  "key": {
+    "B": {
+      "item": "fabrictechmodtesting:basic_battery"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "pattern": [
+    "DBD",
+    "B B",
+    "DBD"
+  ],
+  "result": {
+    "item": "fabrictechmodtesting:advanced_battery"
+  }
+}

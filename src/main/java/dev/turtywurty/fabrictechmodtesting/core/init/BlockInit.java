@@ -2,6 +2,8 @@ package dev.turtywurty.fabrictechmodtesting.core.init;
 
 import dev.turtywurty.fabrictechmodtesting.FabricTechModTesting;
 import dev.turtywurty.fabrictechmodtesting.common.block.AlloyFurnaceBlock;
+import dev.turtywurty.fabrictechmodtesting.common.block.BatteryBlock;
+import dev.turtywurty.fabrictechmodtesting.common.block.CombustionGeneratorBlock;
 import dev.turtywurty.fabrictechmodtesting.common.block.CrusherBlock;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -19,6 +21,21 @@ public class BlockInit {
 
     public static final CrusherBlock CRUSHER = registerWithItem("crusher",
             new CrusherBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.FURNACE).lightLevel($ -> 0)));
+
+    public static final BatteryBlock BASIC_BATTERY = registerWithItem("basic_battery",
+            new BatteryBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK), BatteryBlock.BatteryLevel.BASIC));
+
+    public static final BatteryBlock ADVANCED_BATTERY = registerWithItem("advanced_battery",
+            new BatteryBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK), BatteryBlock.BatteryLevel.ADVANCED));
+
+    public static final BatteryBlock ELITE_BATTERY = registerWithItem("elite_battery",
+            new BatteryBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK), BatteryBlock.BatteryLevel.ELITE));
+
+    public static final BatteryBlock ULTIMATE_BATTERY = registerWithItem("ultimate_battery",
+            new BatteryBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK), BatteryBlock.BatteryLevel.ULTIMATE));
+
+    public static final CombustionGeneratorBlock COMBUSTION_GENERATOR = registerWithItem("combustion_generator",
+            new CombustionGeneratorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.FURNACE)));
 
     public static <T extends Block> T register(String name, T block) {
         return Registry.register(BuiltInRegistries.BLOCK, FabricTechModTesting.id(name), block);

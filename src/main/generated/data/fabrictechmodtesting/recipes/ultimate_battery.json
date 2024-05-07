@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "ultimate_battery",
+  "key": {
+    "B": {
+      "item": "fabrictechmodtesting:elite_battery"
+    },
+    "N": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "S": {
+      "item": "minecraft:nether_star"
+    }
+  },
+  "pattern": [
+    "NBN",
+    "BSB",
+    "NBN"
+  ],
+  "result": {
+    "item": "fabrictechmodtesting:ultimate_battery"
+  }
+}
