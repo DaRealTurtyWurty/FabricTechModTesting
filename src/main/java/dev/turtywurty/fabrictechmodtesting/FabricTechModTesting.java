@@ -1,9 +1,6 @@
 package dev.turtywurty.fabrictechmodtesting;
 
-import dev.turtywurty.fabrictechmodtesting.common.blockentity.AlloyFurnaceBlockEntity;
-import dev.turtywurty.fabrictechmodtesting.common.blockentity.BatteryBlockEntity;
-import dev.turtywurty.fabrictechmodtesting.common.blockentity.CombustionGeneratorBlockEntity;
-import dev.turtywurty.fabrictechmodtesting.common.blockentity.CrusherBlockEntity;
+import dev.turtywurty.fabrictechmodtesting.common.blockentity.*;
 import dev.turtywurty.fabrictechmodtesting.core.init.*;
 import dev.turtywurty.fabrictechmodtesting.core.util.CountedIngredient;
 import net.fabricmc.api.ModInitializer;
@@ -42,5 +39,8 @@ public class FabricTechModTesting implements ModInitializer {
 
         ItemStorage.SIDED.registerForBlockEntity(CombustionGeneratorBlockEntity::getInventoryProvider, BlockEntityTypeInit.COMBUSTION_GENERATOR);
         EnergyStorage.SIDED.registerForBlockEntity(CombustionGeneratorBlockEntity::getEnergyProvider, BlockEntityTypeInit.COMBUSTION_GENERATOR);
+
+        EnergyStorage.SIDED.registerForBlockEntity(CableBlockEntity::getEnergyProvider, BlockEntityTypeInit.CABLE);
+        EnergyStorage.SIDED.registerForBlockEntity(CableFacadeBlockEntity::getEnergyProvider, BlockEntityTypeInit.CABLE_FACADE);
     }
 }

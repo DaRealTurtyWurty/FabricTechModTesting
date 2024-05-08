@@ -4,6 +4,8 @@ import dev.turtywurty.fabrictechmodtesting.core.util.INBTSerializable;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import team.reborn.energy.api.base.SimpleEnergyStorage;
 
 import java.util.ArrayList;
@@ -19,9 +21,16 @@ public class WrappedEnergyStorage implements INBTSerializable<ListTag> {
         addStorage(storage, null);
     }
 
-    public void addStorage(SimpleEnergyStorage storage, Direction direction) {
+    public void addStorage(@NotNull SimpleEnergyStorage storage, @Nullable Direction direction) {
         this.storages.add(storage);
-        this.sidedStorageMap.put(direction, storage);
+
+        if(direction == null) {
+            for (Direction value : Direction.values()) {
+                this.sidedStorageMap.put(value, storage);
+            }
+        } else {
+            this.sidedStorageMap.put(direction, storage);
+        }
     }
 
     public List<SimpleEnergyStorage> getStorages() {
@@ -32,7 +41,11 @@ public class WrappedEnergyStorage implements INBTSerializable<ListTag> {
         return this.sidedStorageMap;
     }
 
-    public SimpleEnergyStorage getStorage(Direction direction) {
+    public SimpleEnergyStorage getStorage(@Nullable Direction direction) {
+        if(direction == null) {
+            return this.storages.get(0);
+        }
+
         return this.sidedStorageMap.get(direction);
     }
 

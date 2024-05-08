@@ -1,6 +1,7 @@
 package dev.turtywurty.fabrictechmodtesting.core.init;
 
 import dev.turtywurty.fabrictechmodtesting.FabricTechModTesting;
+import dev.turtywurty.fabrictechmodtesting.common.item.CableFacadeBlockItem;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -8,6 +9,9 @@ import net.minecraft.world.item.Item;
 
 public class ItemInit {
     public static final Item STEEL_INGOT = register("steel_ingot", new Item(defaultSettings()));
+
+    public static final CableFacadeBlockItem CABLE_FACADE = register("cable_facade",
+            new CableFacadeBlockItem(BlockInit.CABLE_FACADE, defaultSettings()));
 
     public static <T extends Item> T register(String name, T item) {
         return Registry.register(BuiltInRegistries.ITEM, FabricTechModTesting.id(name), item);

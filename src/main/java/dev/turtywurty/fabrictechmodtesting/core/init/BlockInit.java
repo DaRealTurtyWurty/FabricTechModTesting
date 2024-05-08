@@ -1,10 +1,7 @@
 package dev.turtywurty.fabrictechmodtesting.core.init;
 
 import dev.turtywurty.fabrictechmodtesting.FabricTechModTesting;
-import dev.turtywurty.fabrictechmodtesting.common.block.AlloyFurnaceBlock;
-import dev.turtywurty.fabrictechmodtesting.common.block.BatteryBlock;
-import dev.turtywurty.fabrictechmodtesting.common.block.CombustionGeneratorBlock;
-import dev.turtywurty.fabrictechmodtesting.common.block.CrusherBlock;
+import dev.turtywurty.fabrictechmodtesting.common.block.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
@@ -36,6 +33,12 @@ public class BlockInit {
 
     public static final CombustionGeneratorBlock COMBUSTION_GENERATOR = registerWithItem("combustion_generator",
             new CombustionGeneratorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.FURNACE)));
+
+    public static final CableBlock CABLE = registerWithItem("cable",
+            new CableBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion()));
+
+    public static final CableFacadeBlock CABLE_FACADE = register("cable_facade",
+            new CableFacadeBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion()));
 
     public static <T extends Block> T register(String name, T block) {
         return Registry.register(BuiltInRegistries.BLOCK, FabricTechModTesting.id(name), block);

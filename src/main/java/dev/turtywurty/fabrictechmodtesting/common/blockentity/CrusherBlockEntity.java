@@ -71,7 +71,7 @@ public class CrusherBlockEntity extends UpdatableBlockEntity implements Tickable
         this.wrappedInventoryStorage.addContainer(new SyncingSimpleContainer(this, 1), Direction.UP);
         this.wrappedInventoryStorage.addContainer(new SyncingSimpleContainer(this, 2), Direction.DOWN);
 
-        this.wrappedEnergyStorage.addStorage(new SimpleEnergyStorage(10000, 1000, 0), Direction.SOUTH);
+        this.wrappedEnergyStorage.addStorage(new SyncingEnergyStorage(this,10000, 1000, 0));
     }
 
     public InventoryStorage getInventoryProvider(Direction direction) {
@@ -143,12 +143,12 @@ public class CrusherBlockEntity extends UpdatableBlockEntity implements Tickable
 
     // TODO: Create getEnergy method instead of hardcoding 10
     private boolean hasEnergy() {
-        return this.wrappedEnergyStorage.getStorage(Direction.SOUTH).getAmount() >= 10;
+        return getEnergy().getAmount() >= 10;
     }
 
     // TODO: Create getEnergy method instead of hardcoding 10
     private void consumeEnergy() {
-        this.wrappedEnergyStorage.getStorage(Direction.SOUTH).amount -= 10;
+        this.wrappedEnergyStorage.getStorage(null).amount -= 10;
     }
 
     private void reset() {
