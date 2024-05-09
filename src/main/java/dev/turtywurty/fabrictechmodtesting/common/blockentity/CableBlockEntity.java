@@ -66,7 +66,7 @@ public class CableBlockEntity extends UpdatableBlockEntity implements TickableBl
     }
 
     private void traverse(BlockPos pos, Set<BlockPos> traversed, Consumer<CableBlockEntity> consumer) {
-        if(level == null)
+        if (level == null)
             return;
 
         for (Direction direction : Direction.values()) {
@@ -87,17 +87,17 @@ public class CableBlockEntity extends UpdatableBlockEntity implements TickableBl
 
     @Override
     public void tick() {
-        if(level == null || level.isClientSide)
+        if (level == null || level.isClientSide)
             return;
 
         SimpleEnergyStorage energy = getEnergy();
-        if(energy.getAmount() > 0) {
+        if (energy.getAmount() > 0) {
             checkOutputs();
-            if(this.connectedBlocks.isEmpty())
+            if (this.connectedBlocks.isEmpty())
                 return;
 
             long amount = energy.getAmount() / this.connectedBlocks.size();
-            try(Transaction transaction = Transaction.openOuter()) {
+            try (Transaction transaction = Transaction.openOuter()) {
                 for (BlockPos pos : this.connectedBlocks) {
                     Direction direction = Direction.fromDelta(worldPosition.getX() - pos.getX(), worldPosition.getY() - pos.getY(), worldPosition.getZ() - pos.getZ());
                     EnergyStorage storage = EnergyStorage.SIDED.find(level, pos, direction);
@@ -125,11 +125,11 @@ public class CableBlockEntity extends UpdatableBlockEntity implements TickableBl
     public void load(CompoundTag compoundTag) {
         super.load(compoundTag);
 
-        if(!compoundTag.contains(FabricTechModTesting.MOD_ID, Tag.TAG_COMPOUND))
+        if (!compoundTag.contains(FabricTechModTesting.MOD_ID, Tag.TAG_COMPOUND))
             return;
 
         var modidData = compoundTag.getCompound(FabricTechModTesting.MOD_ID);
-        if(modidData.contains("Energy", Tag.TAG_LIST))
+        if (modidData.contains("Energy", Tag.TAG_LIST))
             this.wrappedEnergyStorage.readNBT(modidData.getList("Energy", Tag.TAG_COMPOUND));
     }
 

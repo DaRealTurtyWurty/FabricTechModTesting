@@ -28,7 +28,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.reborn.energy.api.EnergyStorage;
-import team.reborn.energy.api.base.SimpleEnergyStorage;
 
 import java.util.Optional;
 
@@ -71,7 +70,7 @@ public class CrusherBlockEntity extends UpdatableBlockEntity implements Tickable
         this.wrappedInventoryStorage.addContainer(new SyncingSimpleContainer(this, 1), Direction.UP);
         this.wrappedInventoryStorage.addContainer(new SyncingSimpleContainer(this, 2), Direction.DOWN);
 
-        this.wrappedEnergyStorage.addStorage(new SyncingEnergyStorage(this,10000, 1000, 0));
+        this.wrappedEnergyStorage.addStorage(new SyncingEnergyStorage(this, 10000, 1000, 0));
     }
 
     public InventoryStorage getInventoryProvider(Direction direction) {

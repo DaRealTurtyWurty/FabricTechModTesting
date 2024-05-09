@@ -70,6 +70,19 @@ public class SolarPanelBlockEntity extends UpdatableBlockEntity implements Ticka
         this.wrappedEnergyStorage.addStorage(new SyncingEnergyStorage(this, 10000, 0, 1000));
     }
 
+    public static int getEnergyOutput(long dayTime) {
+        dayTime = dayTime % 24000;
+
+        if (dayTime < 1000 || dayTime > 13000)
+            return 0;
+
+        // from 1000 until 6000 it goes from 0 to 35 and from 6000 to 13000 it goes from 35 to 0
+        if (dayTime < 6000)
+            return (int) (35 * (dayTime - 1000) / 5000);
+        else
+            return (int) (35 * (13000 - dayTime) / 7000);
+    }
+
     @Override
     public void tick() {
         if (this.level == null || this.level.isClientSide)
@@ -79,7 +92,7 @@ public class SolarPanelBlockEntity extends UpdatableBlockEntity implements Ticka
 
         SimpleEnergyStorage energyStorage = getEnergyStorage();
         long currentEnergy = energyStorage.amount;
-        if(currentEnergy < energyStorage.getCapacity()) {
+        if (currentEnergy < energyStorage.getCapacity()) {
             int outputSignal = getEnergyOutput();
             energyStorage.amount += outputSignal;
             System.out.println(outputSignal);
@@ -189,19 +202,6 @@ public class SolarPanelBlockEntity extends UpdatableBlockEntity implements Ticka
 
         long dayTime = this.level.getDayTime();
         return getEnergyOutput(dayTime);
-    }
-
-    public static int getEnergyOutput(long dayTime) {
-        dayTime = dayTime % 24000;
-
-        if (dayTime < 1000 || dayTime > 13000)
-            return 0;
-
-        // from 1000 until 6000 it goes from 0 to 35 and from 6000 to 13000 it goes from 35 to 0
-        if(dayTime < 6000)
-            return (int) (35 * (dayTime - 1000) / 5000);
-        else
-            return (int) (35 * (13000 - dayTime) / 7000);
     }
 
     public InventoryStorage getInventoryProvider(Direction direction) {

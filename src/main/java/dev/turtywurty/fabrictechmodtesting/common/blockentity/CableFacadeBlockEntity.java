@@ -18,20 +18,12 @@ public class CableFacadeBlockEntity extends CableBlockEntity {
         super(BlockEntityTypeInit.CABLE_FACADE, blockPos, blockState);
     }
 
-    public void setMimicBlock(BlockState mimicBlock) {
-        this.mimicBlock = mimicBlock;
-        setChanged();
-
-        if(this.level != null)
-            this.level.sendBlockUpdated(this.worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS + Block.UPDATE_NEIGHBORS);
-    }
-
     @Override
     protected void saveAdditional(CompoundTag compoundTag) {
         super.saveAdditional(compoundTag);
 
         var modidData = new CompoundTag();
-        if(this.mimicBlock != null)
+        if (this.mimicBlock != null)
             modidData.put("MimicBlock", NbtUtils.writeBlockState(this.mimicBlock));
 
         compoundTag.put(FabricTechModTesting.MOD_ID, modidData);
@@ -41,15 +33,23 @@ public class CableFacadeBlockEntity extends CableBlockEntity {
     public void load(CompoundTag compoundTag) {
         super.load(compoundTag);
 
-        if(!compoundTag.contains(FabricTechModTesting.MOD_ID, Tag.TAG_COMPOUND))
+        if (!compoundTag.contains(FabricTechModTesting.MOD_ID, Tag.TAG_COMPOUND))
             return;
 
         CompoundTag modidData = compoundTag.getCompound(FabricTechModTesting.MOD_ID);
-        if(modidData.contains("MimicBlock", Tag.TAG_COMPOUND))
+        if (modidData.contains("MimicBlock", Tag.TAG_COMPOUND))
             this.mimicBlock = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), modidData.getCompound("MimicBlock"));
     }
 
     public @Nullable BlockState getMimicBlock() {
         return this.mimicBlock;
+    }
+
+    public void setMimicBlock(BlockState mimicBlock) {
+        this.mimicBlock = mimicBlock;
+        setChanged();
+
+        if (this.level != null)
+            this.level.sendBlockUpdated(this.worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS + Block.UPDATE_NEIGHBORS);
     }
 }

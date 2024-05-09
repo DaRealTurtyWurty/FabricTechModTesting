@@ -88,7 +88,7 @@ public class CableFacadeBlockItem extends BlockItem {
                 CableFacadeBlock facadeBlock = (CableFacadeBlock) getBlock();
                 BlockPlaceContext blockContext = new ReplaceBlockItemUseContext(context);
                 BlockState placementState = facadeBlock.getStateForPlacement(blockContext);
-                if(placementState == null)
+                if (placementState == null)
                     return InteractionResult.FAIL;
 
                 placementState = placementState.setValue(CableBlock.NORTH, state.getValue(CableBlock.NORTH))

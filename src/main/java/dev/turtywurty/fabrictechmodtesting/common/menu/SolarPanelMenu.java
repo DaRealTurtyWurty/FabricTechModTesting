@@ -6,11 +6,12 @@ import dev.turtywurty.fabrictechmodtesting.common.menu.slot.PredicateSlot;
 import dev.turtywurty.fabrictechmodtesting.core.init.BlockInit;
 import dev.turtywurty.fabrictechmodtesting.core.init.MenuTypeInit;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.Mth;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
@@ -42,7 +43,7 @@ public class SolarPanelMenu extends AbstractContainerMenu {
 
     private void addOurSlots(WrappedInventoryStorage<SimpleContainer> wrappedStorage) {
         SimpleContainer container = wrappedStorage.getContainer(0);
-        if(container == null)
+        if (container == null)
             throw new IllegalStateException("Wrapped inventory storage does not have a container at index 0!");
 
         addSlot(new PredicateSlot(container, 0, 81, 36));
@@ -131,7 +132,7 @@ public class SolarPanelMenu extends AbstractContainerMenu {
 
     public float getEnergyOutputPercent() {
         int output = getEnergyOutput();
-        if(output == 0)
+        if (output == 0)
             return 0.0F;
 
         return Math.max(0, Math.min(1.0F, output / 35.0F));

@@ -4,7 +4,6 @@ import dev.turtywurty.fabrictechmodtesting.FabricTechModTesting;
 import dev.turtywurty.fabrictechmodtesting.common.block.BatteryBlock;
 import dev.turtywurty.fabrictechmodtesting.common.blockentity.util.*;
 import dev.turtywurty.fabrictechmodtesting.core.init.BlockEntityTypeInit;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -15,11 +14,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import team.reborn.energy.api.EnergyStorage;
 import team.reborn.energy.api.base.SimpleEnergyStorage;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BatteryBlockEntity extends UpdatableBlockEntity implements TickableBlockEntity, EnergySpreader {
     private final BatteryBlock.BatteryLevel batteryLevel;
@@ -34,7 +29,7 @@ public class BatteryBlockEntity extends UpdatableBlockEntity implements Tickable
 
     @Override
     public void tick() {
-        if(this.level == null || this.level.isClientSide)
+        if (this.level == null || this.level.isClientSide)
             return;
 
         SimpleEnergyStorage thisStorage = this.wrappedEnergyStorage.getStorage(null);

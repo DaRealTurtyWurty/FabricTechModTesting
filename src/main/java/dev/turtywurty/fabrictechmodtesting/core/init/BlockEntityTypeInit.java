@@ -3,7 +3,6 @@ package dev.turtywurty.fabrictechmodtesting.core.init;
 import dev.turtywurty.fabrictechmodtesting.FabricTechModTesting;
 import dev.turtywurty.fabrictechmodtesting.common.block.BatteryBlock;
 import dev.turtywurty.fabrictechmodtesting.common.blockentity.*;
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;

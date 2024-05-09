@@ -24,7 +24,7 @@ public class WrappedEnergyStorage implements INBTSerializable<ListTag> {
     public void addStorage(@NotNull SimpleEnergyStorage storage, @Nullable Direction direction) {
         this.storages.add(storage);
 
-        if(direction == null) {
+        if (direction == null) {
             for (Direction value : Direction.values()) {
                 this.sidedStorageMap.put(value, storage);
             }
@@ -42,7 +42,7 @@ public class WrappedEnergyStorage implements INBTSerializable<ListTag> {
     }
 
     public SimpleEnergyStorage getStorage(@Nullable Direction direction) {
-        if(direction == null) {
+        if (direction == null) {
             return this.storages.get(0);
         }
 
