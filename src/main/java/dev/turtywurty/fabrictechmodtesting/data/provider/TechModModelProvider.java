@@ -24,7 +24,6 @@ public class TechModModelProvider extends FabricModelProvider {
         blockStateModelGenerator.createTrivialCube(BlockInit.ELITE_BATTERY);
         blockStateModelGenerator.createTrivialCube(BlockInit.ULTIMATE_BATTERY);
         blockStateModelGenerator.createFurnace(BlockInit.COMBUSTION_GENERATOR, TexturedModel.ORIENTABLE_ONLY_TOP);
-        blockStateModelGenerator.createTrivialCube(BlockInit.SOLAR_PANEL);
     }
 
     @Override

@@ -26,6 +26,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -70,17 +71,33 @@ public class SolarPanelBlockEntity extends UpdatableBlockEntity implements Ticka
         this.wrappedEnergyStorage.addStorage(new SyncingEnergyStorage(this, 10000, 0, 1000));
     }
 
-    public static int getEnergyOutput(long dayTime) {
+    public static int getEnergyOutput(long dayTime, boolean isRaining, boolean isThundering, int skylight) {
         dayTime = dayTime % 24000;
 
-        if (dayTime < 1000 || dayTime > 13000)
+        if (dayTime <= 0 || dayTime >= 13000) // from 13000 to 24000 it's night
             return 0;
 
-        // from 1000 until 6000 it goes from 0 to 35 and from 6000 to 13000 it goes from 35 to 0
-        if (dayTime < 6000)
-            return (int) (35 * (dayTime - 1000) / 5000);
+        int output;
+        if (dayTime < 6000) // from 0 until 6000 it goes from 0 to 35 and from 6000 to 13000 it goes from 35 to 0
+            output = (int) (35 * dayTime / 6000);
         else
-            return (int) (35 * (13000 - dayTime) / 7000);
+            output = (int) (35 * (13000 - dayTime) / 7000);
+
+        if (isRaining) { // take off 30%
+            if (isThundering) { // take off 50%
+                output /= 2;
+            } else {
+                output = (int) (output * 0.7);
+            }
+        }
+
+        if (skylight > 0) {
+            output = (int) (output * (skylight / 15.0));
+        } else {
+            output = 0;
+        }
+
+        return output;
     }
 
     @Override
@@ -95,7 +112,7 @@ public class SolarPanelBlockEntity extends UpdatableBlockEntity implements Ticka
         if (currentEnergy < energyStorage.getCapacity()) {
             int outputSignal = getEnergyOutput();
             energyStorage.amount += outputSignal;
-            if(energyStorage.amount > energyStorage.getCapacity())
+            if (energyStorage.amount > energyStorage.getCapacity())
                 energyStorage.amount = energyStorage.getCapacity();
 
             if (currentEnergy != energyStorage.amount)
@@ -203,7 +220,10 @@ public class SolarPanelBlockEntity extends UpdatableBlockEntity implements Ticka
             return 0;
 
         long dayTime = this.level.getDayTime();
-        return getEnergyOutput(dayTime);
+        boolean isRaining = this.level.isRaining();
+        boolean isThundering = this.level.isThundering();
+        int skylight = this.level.getBrightness(LightLayer.SKY, this.worldPosition.above());
+        return getEnergyOutput(dayTime, isRaining, isThundering, skylight);
     }
 
     public InventoryStorage getInventoryProvider(Direction direction) {

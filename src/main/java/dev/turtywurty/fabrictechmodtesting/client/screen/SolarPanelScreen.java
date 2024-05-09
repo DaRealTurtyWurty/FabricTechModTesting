@@ -2,12 +2,19 @@ package dev.turtywurty.fabrictechmodtesting.client.screen;
 
 import dev.turtywurty.fabrictechmodtesting.FabricTechModTesting;
 import dev.turtywurty.fabrictechmodtesting.common.menu.SolarPanelMenu;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SolarPanelScreen extends AbstractContainerScreen<SolarPanelMenu> {
     private static final ResourceLocation TEXTURE = FabricTechModTesting.id("textures/gui/solar_panel.png");
@@ -46,7 +53,50 @@ public class SolarPanelScreen extends AbstractContainerScreen<SolarPanelMenu> {
         }
 
         if (isHovering(36, 33, 21, 21, mouseX, mouseY)) {
-            guiGraphics.renderTooltip(this.font, Component.literal("Sunlight: %d%%".formatted((int) Mth.clamp(this.menu.getEnergyOutputPercent() * 100, 0, 100))), mouseX, mouseY);
+            List<Component> tooltip = new ArrayList<>(List.of(
+                    Component.literal("Energy Output: %d RF/t".formatted(this.menu.getEnergyOutput())),
+                    Component.literal("Sunlight: %d%%".formatted((int) Mth.clamp(this.menu.getEnergyOutputPercent() * 100, 0, 100)))
+            ));
+
+            if (this.minecraft != null && this.minecraft.level != null) {
+                Level level = this.minecraft.level;
+
+                boolean addedNewLine = false;
+                if (level.isNight()) {
+                    tooltip.add(Component.empty());
+                    tooltip.add(Component.literal("⚠ Night").withColor(0xFF5555));
+
+                    addedNewLine = true;
+                }
+
+                if (level.isThundering()) {
+                    if (!addedNewLine) {
+                        tooltip.add(Component.empty());
+                        addedNewLine = true;
+                    }
+
+                    tooltip.add(Component.literal("⚠ Thundering").withColor(0xFF5555));
+                } else if (level.isRaining()) {
+                    if (!addedNewLine) {
+                        tooltip.add(Component.empty());
+                        addedNewLine = true;
+                    }
+
+                    tooltip.add(Component.literal("⚠ Raining").withColor(0xFF5555));
+                }
+
+                int brightness = level.getBrightness(LightLayer.SKY, this.menu.getBlockEntity().getBlockPos().above());
+                if(brightness < 15) {
+                    if (!addedNewLine) {
+                        tooltip.add(Component.empty());
+                        addedNewLine = true;
+                    }
+
+                    tooltip.add(Component.literal("⚠ Dark").withColor(0xFF5555));
+                }
+            }
+
+            guiGraphics.renderComponentTooltip(this.font, tooltip, mouseX, mouseY);
         }
     }
 }
