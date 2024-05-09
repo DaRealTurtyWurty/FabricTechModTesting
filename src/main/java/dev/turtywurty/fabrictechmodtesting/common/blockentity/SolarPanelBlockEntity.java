@@ -95,7 +95,9 @@ public class SolarPanelBlockEntity extends UpdatableBlockEntity implements Ticka
         if (currentEnergy < energyStorage.getCapacity()) {
             int outputSignal = getEnergyOutput();
             energyStorage.amount += outputSignal;
-            System.out.println(outputSignal);
+            if(energyStorage.amount > energyStorage.getCapacity())
+                energyStorage.amount = energyStorage.getCapacity();
+
             if (currentEnergy != energyStorage.amount)
                 dirty = true;
         }

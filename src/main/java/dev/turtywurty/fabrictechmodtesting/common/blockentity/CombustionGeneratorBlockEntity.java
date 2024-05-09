@@ -83,10 +83,14 @@ public class CombustionGeneratorBlockEntity extends UpdatableBlockEntity impleme
 
         boolean dirty = false;
 
-        if (getEnergy().getAmount() < getEnergy().getCapacity()) {
+        SimpleEnergyStorage energy = getEnergy();
+        if (energy.getAmount() < energy.getCapacity()) {
             if (this.burnTime > 0) {
                 this.burnTime--;
-                getEnergy().amount += 10; // TODO: Have this be a variable amount depending on some factors
+                energy.amount += 10; // TODO: Have this be a variable amount depending on some factors
+                if(energy.getAmount() > energy.getCapacity()) {
+                    energy.amount = energy.getCapacity();
+                }
 
                 dirty = true;
             }
@@ -96,7 +100,7 @@ public class CombustionGeneratorBlockEntity extends UpdatableBlockEntity impleme
                 getInventory().getItem(0).shrink(1);
 
                 dirty = true;
-            } else if (this.burnTime <= 0 && getEnergy().amount <= 0) {
+            } else if (this.burnTime <= 0 && energy.getAmount() <= 0) {
                 int maxBurnTime = this.maxBurnTime;
                 int burnTime = this.burnTime;
 
@@ -110,8 +114,7 @@ public class CombustionGeneratorBlockEntity extends UpdatableBlockEntity impleme
         if (dirty)
             update();
 
-        SimpleEnergyStorage thisStorage = this.wrappedEnergyStorage.getStorage(null);
-        spread(this.level, this.worldPosition, thisStorage);
+        spread(this.level, this.worldPosition, energy);
     }
 
     private long simulateInsertion(EnergyStorage storage, long amount, Transaction outer) {
