@@ -1,13 +1,16 @@
 package dev.turtywurty.fabrictechmodtesting.common.block;
 
-import com.google.common.base.Predicates;
 import dev.turtywurty.fabrictechmodtesting.common.blockentity.CableBlockEntity;
 import dev.turtywurty.fabrictechmodtesting.common.blockentity.util.TickableBlockEntity;
 import dev.turtywurty.fabrictechmodtesting.core.init.BlockEntityTypeInit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -27,6 +30,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -37,7 +41,6 @@ import org.jetbrains.annotations.Nullable;
 import team.reborn.energy.api.EnergyStorage;
 
 import java.util.Locale;
-import java.util.function.Predicate;
 
 public class CableBlock extends Block implements SimpleWaterloggedBlock, EntityBlock {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -228,6 +231,19 @@ public class CableBlock extends Block implements SimpleWaterloggedBlock, EntityB
     @Override
     public @NotNull FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public @NotNull InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+        if (!level.isClientSide) {
+            BlockEntity blockEntity = level.getBlockEntity(blockPos);
+            if (blockEntity instanceof CableBlockEntity cable) {
+                player.displayClientMessage(Component.literal(cable.getEnergy().getAmount() + " / " + cable.getEnergy().getCapacity() + " FE"), true);
+            }
+        }
+
+        return InteractionResult.SUCCESS;
     }
 
     @SuppressWarnings("deprecation")

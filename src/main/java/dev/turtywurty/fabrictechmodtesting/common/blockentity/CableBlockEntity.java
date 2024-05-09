@@ -133,7 +133,7 @@ public class CableBlockEntity extends UpdatableBlockEntity implements TickableBl
             this.wrappedEnergyStorage.readNBT(modidData.getList("Energy", Tag.TAG_COMPOUND));
     }
 
-    public EnergyStorage getEnergyProvider(Direction direction) {
+    public SimpleEnergyStorage getEnergyProvider(Direction direction) {
         return this.wrappedEnergyStorage.getStorage(direction);
     }
 }

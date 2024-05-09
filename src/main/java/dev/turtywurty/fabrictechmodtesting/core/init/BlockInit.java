@@ -17,7 +17,7 @@ public class BlockInit {
             new AlloyFurnaceBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.FURNACE)));
 
     public static final CrusherBlock CRUSHER = registerWithItem("crusher",
-            new CrusherBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.FURNACE).lightLevel($ -> 0)));
+            new CrusherBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.FURNACE).noOcclusion().lightLevel($ -> 0)));
 
     public static final BatteryBlock BASIC_BATTERY = registerWithItem("basic_battery",
             new BatteryBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK), BatteryBlock.BatteryLevel.BASIC));
@@ -39,6 +39,9 @@ public class BlockInit {
 
     public static final CableFacadeBlock CABLE_FACADE = register("cable_facade",
             new CableFacadeBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion()));
+
+    public static final SolarPanelBlock SOLAR_PANEL = registerWithItem("solar_panel",
+            new SolarPanelBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion()));
 
     public static <T extends Block> T register(String name, T block) {
         return Registry.register(BuiltInRegistries.BLOCK, FabricTechModTesting.id(name), block);

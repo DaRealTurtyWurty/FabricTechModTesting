@@ -15,6 +15,8 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,43 +29,43 @@ public class WrappedInventoryStorage<T extends SimpleContainer> implements INBTS
     private final Map<Direction, InventoryStorage> sidedStorageMap = new HashMap<>();
     private final CombinedStorage<ItemVariant, InventoryStorage> combinedStorage = new CombinedStorage<>(storages);
 
-    public void addContainer(T container) {
+    public void addContainer(@NotNull T container) {
         addContainer(container, null);
     }
 
-    public void addContainer(T container, Direction direction) {
+    public void addContainer(@NotNull T container, @Nullable Direction direction) {
         this.containers.add(container);
 
-        InventoryStorage storage = InventoryStorage.of(container, direction);
+        var storage = InventoryStorage.of(container, direction);
         this.storages.add(storage);
         this.sidedStorageMap.put(direction, storage);
     }
 
-    public List<T> getContainers() {
+    public @NotNull List<T> getContainers() {
         return this.containers;
     }
 
-    public List<InventoryStorage> getStorages() {
+    public @NotNull List<InventoryStorage> getStorages() {
         return this.storages;
     }
 
-    public Map<Direction, InventoryStorage> getSidedStorageMap() {
+    public @NotNull Map<Direction, InventoryStorage> getSidedStorageMap() {
         return this.sidedStorageMap;
     }
 
-    public CombinedStorage<ItemVariant, InventoryStorage> getCombinedStorage() {
+    public @NotNull CombinedStorage<ItemVariant, InventoryStorage> getCombinedStorage() {
         return this.combinedStorage;
     }
 
-    public InventoryStorage getStorage(Direction direction) {
+    public @Nullable InventoryStorage getStorage(@Nullable Direction direction) {
         return this.sidedStorageMap.get(direction);
     }
 
-    public T getContainer(int index) {
+    public @Nullable T getContainer(int index) {
         return this.containers.get(index);
     }
 
-    public List<ItemStack> getStacks() {
+    public @NotNull List<ItemStack> getStacks() {
         List<ItemStack> stacks = new ArrayList<>();
         for (T container : this.containers) {
             for (int i = 0; i < container.getContainerSize(); i++) {
@@ -75,7 +77,7 @@ public class WrappedInventoryStorage<T extends SimpleContainer> implements INBTS
     }
 
     @Override
-    public ListTag writeNBT() {
+    public @NotNull ListTag writeNBT() {
         var nbt = new ListTag();
         for (T container : this.containers) {
             var containerNbt = new CompoundTag();
@@ -86,7 +88,7 @@ public class WrappedInventoryStorage<T extends SimpleContainer> implements INBTS
     }
 
     @Override
-    public void readNBT(ListTag nbt) {
+    public void readNBT(@NotNull ListTag nbt) {
         for (int i = 0; i < nbt.size(); i++) {
             CompoundTag containerNbt = nbt.getCompound(i);
             this.containers.get(i).clearContent();
@@ -99,19 +101,19 @@ public class WrappedInventoryStorage<T extends SimpleContainer> implements INBTS
             throw new IllegalArgumentException("Wrapped container size is not equal to " + size + "!");
     }
 
-    public void startOpen(Player player) {
+    public void startOpen(@NotNull Player player) {
         for (T container : this.containers) {
             container.startOpen(player);
         }
     }
 
-    public void stopOpen(Player player) {
+    public void stopOpen(@NotNull Player player) {
         for (T container : this.containers) {
             container.stopOpen(player);
         }
     }
 
-    public void dropContents(Level level, BlockPos pos) {
+    public void dropContents(@NotNull Level level, @NotNull BlockPos pos) {
         for (T container : this.containers) {
             Containers.dropContents(level, pos, container);
         }

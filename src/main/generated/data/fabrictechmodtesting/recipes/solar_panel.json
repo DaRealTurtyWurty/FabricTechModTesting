@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "solar_panel",
+  "key": {
+    "B": {
+      "item": "minecraft:blue_dye"
+    },
+    "G": {
+      "item": "minecraft:glass_pane"
+    },
+    "P": {
+      "item": "minecraft:prismarine_crystals"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "S": {
+      "item": "fabrictechmodtesting:steel_block"
+    }
+  },
+  "pattern": [
+    "GGG",
+    "PBP",
+    "SRS"
+  ],
+  "result": {
+    "item": "fabrictechmodtesting:solar_panel"
+  }
+}

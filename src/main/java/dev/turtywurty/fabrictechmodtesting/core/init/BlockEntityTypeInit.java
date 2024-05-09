@@ -3,6 +3,7 @@ package dev.turtywurty.fabrictechmodtesting.core.init;
 import dev.turtywurty.fabrictechmodtesting.FabricTechModTesting;
 import dev.turtywurty.fabrictechmodtesting.common.block.BatteryBlock;
 import dev.turtywurty.fabrictechmodtesting.common.blockentity.*;
+import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;
@@ -36,4 +37,7 @@ public class BlockEntityTypeInit {
 
     public static final BlockEntityType<CableFacadeBlockEntity> CABLE_FACADE =
             register("cable_facade", CableFacadeBlockEntity::new, BlockInit.CABLE_FACADE);
+
+    public static final BlockEntityType<SolarPanelBlockEntity> SOLAR_PANEL =
+            register("solar_panel", SolarPanelBlockEntity::new, BlockInit.SOLAR_PANEL);
 }

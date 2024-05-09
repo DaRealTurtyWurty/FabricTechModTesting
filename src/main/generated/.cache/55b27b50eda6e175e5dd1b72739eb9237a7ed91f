@@ -1,8 +1,10 @@
-// 1.20.4	2024-05-06T23:42:45.3426818	FabricTechModTesting/Block Loot Tables
+// 1.20.4	2024-05-09T14:20:11.7415744	FabricTechModTesting/Block Loot Tables
+9cbc073ec9ffb282aa7b0559418bd16937a133b3 data\fabrictechmodtesting\loot_tables\blocks\solar_panel.json
 e3cd39ec1dfc96f6c01b2ef5eddb0f338ce1dd88 data\fabrictechmodtesting\loot_tables\blocks\crusher.json
 89b1019964da8f7d3c9b75a490dd14056ec7ac56 data\fabrictechmodtesting\loot_tables\blocks\advanced_battery.json
 d981867bdce0c12b612f004418287fe1f6bb8484 data\fabrictechmodtesting\loot_tables\blocks\steel_block.json
 12c74678b19d46801206d4c3765f43e81337eefe data\fabrictechmodtesting\loot_tables\blocks\elite_battery.json
+6ac9073c108070320200ad83519635a59a24e5fe data\fabrictechmodtesting\loot_tables\blocks\cable.json
 c251ccdcc949d33b494ba3e57389ac6e39c0e7bd data\fabrictechmodtesting\loot_tables\blocks\combustion_generator.json
 1247724c112894191d4c436f5723864a03aac14f data\fabrictechmodtesting\loot_tables\blocks\basic_battery.json
 4ec9026151d7a470ce79a7dd5caa19d6a6681308 data\fabrictechmodtesting\loot_tables\blocks\ultimate_battery.json

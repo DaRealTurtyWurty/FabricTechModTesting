@@ -1,6 +1,7 @@
 package dev.turtywurty.fabrictechmodtesting.common.menu.slot;
 
 import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
@@ -12,6 +13,10 @@ public class PredicateSlot extends Slot {
     public PredicateSlot(Container container, int index, int x, int y, Predicate<ItemStack> predicate) {
         super(container, index, x, y);
         this.predicate = predicate;
+    }
+
+    public PredicateSlot(SimpleContainer container, int index, int x, int y) {
+        this(container, index, x, y, container::canAddItem);
     }
 
     @Override

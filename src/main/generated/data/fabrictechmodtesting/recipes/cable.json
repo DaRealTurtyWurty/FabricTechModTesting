@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "cable",
+  "key": {
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "S": {
+      "item": "fabrictechmodtesting:steel_ingot"
+    }
+  },
+  "pattern": [
+    " S ",
+    "R R",
+    " S "
+  ],
+  "result": {
+    "count": 4,
+    "item": "fabrictechmodtesting:cable"
+  }
+}

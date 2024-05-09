@@ -2,10 +2,7 @@ package dev.turtywurty.fabrictechmodtesting.common.blockentity;
 
 import dev.turtywurty.fabrictechmodtesting.FabricTechModTesting;
 import dev.turtywurty.fabrictechmodtesting.common.block.BatteryBlock;
-import dev.turtywurty.fabrictechmodtesting.common.blockentity.util.SyncingEnergyStorage;
-import dev.turtywurty.fabrictechmodtesting.common.blockentity.util.TickableBlockEntity;
-import dev.turtywurty.fabrictechmodtesting.common.blockentity.util.UpdatableBlockEntity;
-import dev.turtywurty.fabrictechmodtesting.common.blockentity.util.WrappedEnergyStorage;
+import dev.turtywurty.fabrictechmodtesting.common.blockentity.util.*;
 import dev.turtywurty.fabrictechmodtesting.core.init.BlockEntityTypeInit;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
@@ -19,11 +16,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.reborn.energy.api.EnergyStorage;
+import team.reborn.energy.api.base.SimpleEnergyStorage;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BatteryBlockEntity extends UpdatableBlockEntity implements TickableBlockEntity {
+public class BatteryBlockEntity extends UpdatableBlockEntity implements TickableBlockEntity, EnergySpreader {
     private final BatteryBlock.BatteryLevel batteryLevel;
     private final WrappedEnergyStorage wrappedEnergyStorage = new WrappedEnergyStorage();
 
@@ -36,41 +34,11 @@ public class BatteryBlockEntity extends UpdatableBlockEntity implements Tickable
 
     @Override
     public void tick() {
-        EnergyStorage thisStorage = this.wrappedEnergyStorage.getStorage(null);
-
-        List<EnergyStorage> storages = new ArrayList<>();
-        for (Direction direction : Direction.values()) {
-            EnergyStorage storage = EnergyStorage.SIDED.find(this.level, this.worldPosition.relative(direction), direction.getOpposite());
-            if (storage == null || !storage.supportsInsertion() || storage.getAmount() >= storage.getCapacity())
-                continue;
-
-            storages.add(storage);
-        }
-
-        if (storages.isEmpty())
+        if(this.level == null || this.level.isClientSide)
             return;
 
-        try (Transaction transaction = Transaction.openOuter()) {
-            long currentEnergy = thisStorage.getAmount();
-            long totalExtractable = thisStorage.extract(Long.MAX_VALUE, transaction);
-            long totalInserted = 0;
-
-            for (EnergyStorage storage : storages) {
-                long amount = totalExtractable - totalInserted;
-                if (amount <= 0)
-                    break;
-
-                long inserted = simulateInsertion(storage, amount, transaction);
-                totalInserted += inserted;
-            }
-
-            long remaining = totalExtractable - totalInserted;
-            thisStorage.insert(remaining, transaction);
-            transaction.commit();
-
-            if (currentEnergy != thisStorage.getAmount())
-                update();
-        }
+        SimpleEnergyStorage thisStorage = this.wrappedEnergyStorage.getStorage(null);
+        spread(this.level, this.worldPosition, thisStorage);
     }
 
     @Override
@@ -97,13 +65,12 @@ public class BatteryBlockEntity extends UpdatableBlockEntity implements Tickable
         this.wrappedEnergyStorage.readNBT(modidData.getList("Energy", Tag.TAG_COMPOUND));
     }
 
-    public EnergyStorage getEnergyProvider(Direction direction) {
+    public SimpleEnergyStorage getEnergyProvider(Direction direction) {
         return this.wrappedEnergyStorage.getStorage(direction);
     }
 
-    @Nullable
     @Override
-    public Packet<ClientGamePacketListener> getUpdatePacket() {
+    public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
@@ -112,14 +79,6 @@ public class BatteryBlockEntity extends UpdatableBlockEntity implements Tickable
         CompoundTag tag = super.getUpdateTag();
         saveAdditional(tag);
         return tag;
-    }
-
-    private long simulateInsertion(EnergyStorage storage, long amount, Transaction outer) {
-        try (Transaction inner = outer.openNested()) {
-            long max = storage.insert(amount, inner);
-            inner.abort();
-            return max;
-        }
     }
 
     public BatteryBlock.BatteryLevel getBatteryLevel() {

@@ -42,5 +42,8 @@ public class FabricTechModTesting implements ModInitializer {
 
         EnergyStorage.SIDED.registerForBlockEntity(CableBlockEntity::getEnergyProvider, BlockEntityTypeInit.CABLE);
         EnergyStorage.SIDED.registerForBlockEntity(CableFacadeBlockEntity::getEnergyProvider, BlockEntityTypeInit.CABLE_FACADE);
+
+        ItemStorage.SIDED.registerForBlockEntity(SolarPanelBlockEntity::getInventoryProvider, BlockEntityTypeInit.SOLAR_PANEL);
+        EnergyStorage.SIDED.registerForBlockEntity(SolarPanelBlockEntity::getEnergyProvider, BlockEntityTypeInit.SOLAR_PANEL);
     }
 }

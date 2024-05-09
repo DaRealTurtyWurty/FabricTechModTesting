@@ -169,6 +169,29 @@ public class TechModRecipeProvider extends FabricRecipeProvider {
                 .unlockedBy(getHasName(BlockInit.BASIC_BATTERY), has(BlockInit.BASIC_BATTERY))
                 .save(output, FabricTechModTesting.id("combustion_generator"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, BlockInit.CABLE, 4)
+                .define('S', ItemInit.STEEL_INGOT)
+                .define('R', Items.REDSTONE)
+                .pattern(" S ")
+                .pattern("R R")
+                .pattern(" S ")
+                .group("cable")
+                .unlockedBy(getHasName(BlockInit.STEEL_BLOCK), has(BlockInit.STEEL_BLOCK))
+                .save(output, FabricTechModTesting.id("cable"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, BlockInit.SOLAR_PANEL)
+                .define('S', BlockInit.STEEL_BLOCK)
+                .define('G', Items.GLASS_PANE)
+                .define('R', Items.REDSTONE)
+                .define('B', Items.BLUE_DYE)
+                .define('P', Items.PRISMARINE_CRYSTALS)
+                .pattern("GGG")
+                .pattern("PBP")
+                .pattern("SRS")
+                .group("solar_panel")
+                .unlockedBy(getHasName(BlockInit.STEEL_BLOCK), has(BlockInit.STEEL_BLOCK))
+                .save(output, FabricTechModTesting.id("solar_panel"));
+
         alloyFurnaceRecipe(output, RecipeCategory.MISC,
                 CountedIngredient.of(8, Items.IRON_INGOT),
                 CountedIngredient.of(1, Items.COAL),

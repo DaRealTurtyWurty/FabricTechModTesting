@@ -33,7 +33,7 @@ import team.reborn.energy.api.base.SimpleEnergyStorage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CombustionGeneratorBlockEntity extends UpdatableBlockEntity implements TickableBlockEntity, ExtendedScreenHandlerFactory {
+public class CombustionGeneratorBlockEntity extends UpdatableBlockEntity implements TickableBlockEntity, ExtendedScreenHandlerFactory, EnergySpreader {
     public static final Component TITLE = Component.translatable("container." + FabricTechModTesting.MOD_ID + ".combustion_generator");
 
     private final WrappedInventoryStorage<SimpleContainer> wrappedInventoryStorage = new WrappedInventoryStorage<>();
@@ -110,46 +110,11 @@ public class CombustionGeneratorBlockEntity extends UpdatableBlockEntity impleme
             }
         }
 
-        EnergyStorage thisStorage = this.wrappedEnergyStorage.getStorage(null);
-
-        List<EnergyStorage> storages = new ArrayList<>();
-        for (Direction direction : Direction.values()) {
-            EnergyStorage storage = EnergyStorage.SIDED.find(this.level, this.worldPosition.relative(direction), direction.getOpposite());
-            if (storage == null || !storage.supportsInsertion() || storage.getAmount() >= storage.getCapacity())
-                continue;
-
-            storages.add(storage);
-        }
-
-        if (storages.isEmpty()) {
-            if (dirty)
-                update();
-            return;
-        }
-
-        try (Transaction transaction = Transaction.openOuter()) {
-            long currentEnergy = thisStorage.getAmount();
-            long totalExtractable = thisStorage.extract(Long.MAX_VALUE, transaction);
-            long totalInserted = 0;
-
-            for (EnergyStorage storage : storages) {
-                long insertable = simulateInsertion(storage, totalExtractable, transaction);
-                long inserted = storage.insert(insertable, transaction);
-                totalInserted += inserted;
-            }
-
-            if (totalInserted < totalExtractable) {
-                thisStorage.insert(totalExtractable - totalInserted, transaction);
-            }
-
-            transaction.commit();
-
-            if (currentEnergy != thisStorage.getAmount())
-                dirty = true;
-        }
-
         if (dirty)
             update();
+
+        SimpleEnergyStorage thisStorage = this.wrappedEnergyStorage.getStorage(null);
+        spread(this.level, this.worldPosition, thisStorage);
     }
 
     private long simulateInsertion(EnergyStorage storage, long amount, Transaction outer) {
