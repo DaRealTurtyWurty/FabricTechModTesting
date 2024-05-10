@@ -9,6 +9,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -22,15 +23,63 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 public class SolarPanelBlock extends Block implements EntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
+    private static final Map<Direction, VoxelShape> SHAPES = new EnumMap<>(Direction.class);
+
     public SolarPanelBlock(Properties properties) {
         super(properties);
         registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
+
+        runCalculation(makeShape());
+    }
+
+    private static void runCalculation(VoxelShape shape) {
+        for (final Direction direction : Direction.values()) {
+            SHAPES.put(direction, calculateShapes(direction, shape));
+        }
+    }
+
+    private static VoxelShape calculateShapes(Direction to, VoxelShape shape) {
+        final VoxelShape[] buffer = {shape, Shapes.empty()};
+
+        final int times = (to.get2DDataValue() - Direction.NORTH.get2DDataValue() + 4) % 4;
+        for (int i = 0; i < times; i++) {
+            buffer[0].forAllBoxes((minX, minY, minZ, maxX, maxY,
+                                   maxZ) -> buffer[1] = Shapes.or(buffer[1], Shapes.create(1 - maxZ, minY, minX, 1 - minZ, maxY, maxX)));
+            buffer[0] = buffer[1];
+            buffer[1] = Shapes.empty();
+        }
+
+        return buffer[0];
+    }
+
+    private static VoxelShape makeShape() {
+        VoxelShape shape = Shapes.empty();
+        shape = Shapes.join(shape, Shapes.box(0.125, 0, 0.1875, 0.875, 0.375, 0.8125), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.25, 0.375, 0.3125, 0.375, 0.6375, 0.4375), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.625, 0.375, 0.3125, 0.75, 0.6375, 0.4375), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.2500625, 0.6080619511636574, 0.2934720239988597, 0.7500625000000001, 0.7330619511636574, 0.4184720239988597), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.06256250000000008, 0.7759256573365906, 0.07009545221463254, 0.9375625000000001, 0.8384256573365906, 0.8200954522146325), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.625, 0.375, 0.5625, 0.75, 0.75, 0.6875), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.25, 0.375, 0.5625, 0.375, 0.75, 0.6875), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.2500625, 0.7205619511636574, 0.5434720239988597, 0.7500625000000001, 0.8455619511636574, 0.6684720239988597), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.125, 0, 0.1875, 0.875, 0.375, 0.8125), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.25, 0.375, 0.3125, 0.75, 0.625, 0.6875), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.0625, 0.625, 0.0625, 0.9375, 1, 0.8125), BooleanOp.OR);
+
+        return shape;
     }
 
     @SuppressWarnings("deprecation")
@@ -113,5 +162,11 @@ public class SolarPanelBlock extends Block implements EntityBlock {
     @Override
     public boolean isSignalSource(BlockState blockState) {
         return true;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public @NotNull VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+        return SHAPES.get(blockState.getValue(FACING));
     }
 }
