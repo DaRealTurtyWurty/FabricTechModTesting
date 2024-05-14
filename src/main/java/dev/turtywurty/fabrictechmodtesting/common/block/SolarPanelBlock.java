@@ -65,21 +65,18 @@ public class SolarPanelBlock extends Block implements EntityBlock {
         return buffer[0];
     }
 
-    private static VoxelShape makeShape() {
+    private static VoxelShape makeShape(){
         VoxelShape shape = Shapes.empty();
         shape = Shapes.join(shape, Shapes.box(0.125, 0, 0.1875, 0.875, 0.375, 0.8125), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.25, 0.375, 0.3125, 0.375, 0.6375, 0.4375), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.625, 0.375, 0.3125, 0.75, 0.6375, 0.4375), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.2500625, 0.6080619511636574, 0.2934720239988597, 0.7500625000000001, 0.7330619511636574, 0.4184720239988597), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.06256250000000008, 0.7759256573365906, 0.07009545221463254, 0.9375625000000001, 0.8384256573365906, 0.8200954522146325), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.625, 0.375, 0.5625, 0.75, 0.75, 0.6875), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.25, 0.375, 0.5625, 0.375, 0.75, 0.6875), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.2500625, 0.7205619511636574, 0.5434720239988597, 0.7500625000000001, 0.8455619511636574, 0.6684720239988597), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.125, 0, 0.1875, 0.875, 0.375, 0.8125), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.25, 0.375, 0.3125, 0.75, 0.625, 0.6875), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.0625, 0.625, 0.0625, 0.9375, 1, 0.8125), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.25, 0.375, 0.3125, 0.75, 0.6875, 0.6875), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.0625, 0.625, 0.0625, 0.9375, 0.8125, 0.25), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.0625, 0.6875, 0.25, 0.9375, 0.875, 0.4375), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.0625, 0.75, 0.4375, 0.9375, 0.9375, 0.625), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.0625, 0.8125, 0.625, 0.9375, 1, 0.8125), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.25, 0.6875, 0.4375, 0.75, 0.75, 0.6875), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.25, 0.75, 0.625, 0.75, 0.8125, 0.6875), BooleanOp.OR);
 
-        return shape;
+        return shape.optimize();
     }
 
     @SuppressWarnings("deprecation")
