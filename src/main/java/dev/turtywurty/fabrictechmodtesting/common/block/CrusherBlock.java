@@ -24,6 +24,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@SuppressWarnings("deprecation")
 public class CrusherBlock extends Block implements EntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty RUNNING = BooleanProperty.create("running");
@@ -33,7 +34,6 @@ public class CrusherBlock extends Block implements EntityBlock {
         registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(RUNNING, false));
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public @NotNull InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         if (!level.isClientSide()) {
@@ -46,7 +46,6 @@ public class CrusherBlock extends Block implements EntityBlock {
         return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
         if (blockState.getBlock() != blockState2.getBlock()) {
@@ -60,13 +59,11 @@ public class CrusherBlock extends Block implements EntityBlock {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public boolean hasAnalogOutputSignal(BlockState blockState) {
         return true;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos blockPos) {
         return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(level.getBlockEntity(blockPos));
