@@ -42,6 +42,7 @@ import team.reborn.energy.api.EnergyStorage;
 
 import java.util.Locale;
 
+@SuppressWarnings("deprecation")
 public class CableBlock extends Block implements SimpleWaterloggedBlock, EntityBlock {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final EnumProperty<ConnectorType> NORTH = EnumProperty.create("north", ConnectorType.class);
@@ -158,7 +159,6 @@ public class CableBlock extends Block implements SimpleWaterloggedBlock, EntityB
                 .setValue(DOWN, down);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter blockGetter, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         ConnectorType north = state.getValue(NORTH);
@@ -171,7 +171,6 @@ public class CableBlock extends Block implements SimpleWaterloggedBlock, EntityB
         return shapeCache[index];
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public @NotNull BlockState updateShape(BlockState state, @NotNull Direction direction, @NotNull BlockState neighbourState, @NotNull LevelAccessor level, @NotNull BlockPos current, @NotNull BlockPos offset) {
         if (state.getValue(WATERLOGGED)) {
@@ -191,7 +190,6 @@ public class CableBlock extends Block implements SimpleWaterloggedBlock, EntityB
         return TickableBlockEntity.createTicker(level);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
         super.neighborChanged(state, level, pos, block, fromPos, isMoving);
@@ -227,13 +225,11 @@ public class CableBlock extends Block implements SimpleWaterloggedBlock, EntityB
                 .setValue(WATERLOGGED, level.getFluidState(pos).getType() == Fluids.WATER));
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public @NotNull FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public @NotNull InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         if (!level.isClientSide) {
@@ -246,7 +242,6 @@ public class CableBlock extends Block implements SimpleWaterloggedBlock, EntityB
         return InteractionResult.SUCCESS;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public @NotNull RenderShape getRenderShape(BlockState blockState) {
         return RenderShape.INVISIBLE; // TODO: Remove this when the model is done
