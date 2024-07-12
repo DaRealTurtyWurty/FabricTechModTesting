@@ -33,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.EnumMap;
 import java.util.Map;
 
+@SuppressWarnings("deprecation")
 public class SolarPanelBlock extends Block implements EntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
@@ -79,7 +80,6 @@ public class SolarPanelBlock extends Block implements EntityBlock {
         return shape.optimize();
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public @NotNull InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         if (!level.isClientSide) {
@@ -93,7 +93,6 @@ public class SolarPanelBlock extends Block implements EntityBlock {
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean isMoving) {
         if (blockState.getBlock() != blockState2.getBlock()) {
@@ -125,13 +124,11 @@ public class SolarPanelBlock extends Block implements EntityBlock {
         builder.add(FACING);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public @NotNull BlockState rotate(BlockState blockState, Rotation rotation) {
         return blockState.setValue(FACING, rotation.rotate(blockState.getValue(FACING)));
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public @NotNull BlockState mirror(BlockState blockState, Mirror mirror) {
         return blockState.rotate(mirror.getRotation(blockState.getValue(FACING)));
@@ -143,19 +140,16 @@ public class SolarPanelBlock extends Block implements EntityBlock {
         return defaultBlockState().setValue(FACING, blockPlaceContext.getHorizontalDirection().getOpposite());
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public boolean hasAnalogOutputSignal(BlockState blockState) {
         return true;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos blockPos) {
         return level.getBlockEntity(blockPos) instanceof SolarPanelBlockEntity solarPanel ? solarPanel.getEnergyOutput() : 0;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public boolean isSignalSource(BlockState blockState) {
         return true;
