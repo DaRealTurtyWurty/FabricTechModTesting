@@ -36,7 +36,6 @@ import team.reborn.energy.api.base.SimpleEnergyStorage;
 
 import java.util.List;
 
-// TODO: Check skylight
 public class SolarPanelBlockEntity extends UpdatableBlockEntity implements TickableBlockEntity, ExtendedScreenHandlerFactory, EnergySpreader {
     public static final Component TITLE = Component.translatable("container." + FabricTechModTesting.MOD_ID + ".solar_panel");
 

@@ -1,7 +1,16 @@
 {
   "variants": {
-    "": {
+    "axis=x": {
+      "model": "fabrictechmodtesting:block/basic_battery",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
       "model": "fabrictechmodtesting:block/basic_battery"
+    },
+    "axis=z": {
+      "model": "fabrictechmodtesting:block/basic_battery",
+      "x": 90
     }
   }
 }

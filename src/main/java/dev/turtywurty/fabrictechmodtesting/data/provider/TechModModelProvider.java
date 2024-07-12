@@ -1,5 +1,6 @@
 package dev.turtywurty.fabrictechmodtesting.data.provider;
 
+import dev.turtywurty.fabrictechmodtesting.common.block.BatteryBlock;
 import dev.turtywurty.fabrictechmodtesting.core.init.BlockInit;
 import dev.turtywurty.fabrictechmodtesting.core.init.ItemInit;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -18,12 +19,15 @@ public class TechModModelProvider extends FabricModelProvider {
     public void generateBlockStateModels(BlockModelGenerators blockStateModelGenerator) {
         blockStateModelGenerator.createTrivialCube(BlockInit.STEEL_BLOCK);
         blockStateModelGenerator.createFurnace(BlockInit.ALLOY_FURNACE, TexturedModel.ORIENTABLE_ONLY_TOP);
-        blockStateModelGenerator.createHorizontallyRotatedBlock(BlockInit.CRUSHER, TexturedModel.ORIENTABLE_ONLY_TOP); // TODO: Custom java model
-        blockStateModelGenerator.createTrivialCube(BlockInit.BASIC_BATTERY);
-        blockStateModelGenerator.createTrivialCube(BlockInit.ADVANCED_BATTERY);
-        blockStateModelGenerator.createTrivialCube(BlockInit.ELITE_BATTERY);
-        blockStateModelGenerator.createTrivialCube(BlockInit.ULTIMATE_BATTERY);
+        createBattery(blockStateModelGenerator, BlockInit.BASIC_BATTERY);
+        createBattery(blockStateModelGenerator, BlockInit.ADVANCED_BATTERY);
+        createBattery(blockStateModelGenerator, BlockInit.ELITE_BATTERY);
+        createBattery(blockStateModelGenerator, BlockInit.ULTIMATE_BATTERY);
         blockStateModelGenerator.createFurnace(BlockInit.COMBUSTION_GENERATOR, TexturedModel.ORIENTABLE_ONLY_TOP);
+    }
+
+    private void createBattery(BlockModelGenerators blockStateModelGenerator, BatteryBlock block) {
+        blockStateModelGenerator.woodProvider(block).log(block);
     }
 
     @Override

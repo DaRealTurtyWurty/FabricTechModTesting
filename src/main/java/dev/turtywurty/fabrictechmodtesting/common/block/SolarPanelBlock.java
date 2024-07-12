@@ -95,7 +95,7 @@ public class SolarPanelBlock extends Block implements EntityBlock {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
+    public void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean isMoving) {
         if (blockState.getBlock() != blockState2.getBlock()) {
             BlockEntity be = level.getBlockEntity(blockPos);
             if (be instanceof SolarPanelBlockEntity blockEntity) {
@@ -103,7 +103,7 @@ public class SolarPanelBlock extends Block implements EntityBlock {
                 level.updateNeighbourForOutputSignal(blockPos, this);
             }
 
-            super.onRemove(blockState, level, blockPos, blockState2, bl);
+            super.onRemove(blockState, level, blockPos, blockState2, isMoving);
         }
     }
 

@@ -192,6 +192,18 @@ public class TechModRecipeProvider extends FabricRecipeProvider {
                 .unlockedBy(getHasName(BlockInit.STEEL_BLOCK), has(BlockInit.STEEL_BLOCK))
                 .save(output, FabricTechModTesting.id("solar_panel"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, BlockInit.WIND_TURBINE)
+                .define('S', BlockInit.STEEL_BLOCK)
+                .define('R', Items.REDSTONE)
+                .define('I', Items.IRON_INGOT)
+                .define('C', Blocks.COPPER_BLOCK)
+                .pattern("SIS")
+                .pattern("ICI")
+                .pattern("SRS")
+                .group("wind_turbine")
+                .unlockedBy(getHasName(BlockInit.STEEL_BLOCK), has(BlockInit.STEEL_BLOCK))
+                .save(output, FabricTechModTesting.id("wind_turbine"));
+
         alloyFurnaceRecipe(output, RecipeCategory.MISC,
                 CountedIngredient.of(8, Items.IRON_INGOT),
                 CountedIngredient.of(1, Items.COAL),

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "wind_turbine",
+  "key": {
+    "C": {
+      "item": "minecraft:copper_block"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "S": {
+      "item": "fabrictechmodtesting:steel_block"
+    }
+  },
+  "pattern": [
+    "SIS",
+    "ICI",
+    "SRS"
+  ],
+  "result": {
+    "item": "fabrictechmodtesting:wind_turbine"
+  }
+}

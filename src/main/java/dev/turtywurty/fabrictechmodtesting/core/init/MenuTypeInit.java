@@ -1,10 +1,7 @@
 package dev.turtywurty.fabrictechmodtesting.core.init;
 
 import dev.turtywurty.fabrictechmodtesting.FabricTechModTesting;
-import dev.turtywurty.fabrictechmodtesting.common.menu.AlloyFurnaceMenu;
-import dev.turtywurty.fabrictechmodtesting.common.menu.CombustionGeneratorMenu;
-import dev.turtywurty.fabrictechmodtesting.common.menu.CrusherMenu;
-import dev.turtywurty.fabrictechmodtesting.common.menu.SolarPanelMenu;
+import dev.turtywurty.fabrictechmodtesting.common.menu.*;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -35,4 +32,10 @@ public class MenuTypeInit {
 
     public static final ExtendedScreenHandlerType<SolarPanelMenu> SOLAR_PANEL =
             registerExtended("solar_panel", SolarPanelMenu::new);
+
+    public static final ExtendedScreenHandlerType<BatteryMenu> BATTERY =
+            registerExtended("battery", BatteryMenu::new);
+
+    public static final ExtendedScreenHandlerType<WindTurbineMenu> WIND_TURBINE =
+            registerExtended("wind_turbine", WindTurbineMenu::new);
 }

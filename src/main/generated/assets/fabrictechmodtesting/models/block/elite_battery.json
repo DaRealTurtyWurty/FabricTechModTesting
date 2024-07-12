@@ -1,6 +1,7 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/cube_column",
   "textures": {
-    "all": "fabrictechmodtesting:block/elite_battery"
+    "end": "fabrictechmodtesting:block/elite_battery_top",
+    "side": "fabrictechmodtesting:block/elite_battery"
   }
 }

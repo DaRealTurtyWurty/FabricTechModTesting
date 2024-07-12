@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/orientable",
-  "textures": {
-    "front": "fabrictechmodtesting:block/crusher_front",
-    "side": "fabrictechmodtesting:block/crusher_side",
-    "top": "fabrictechmodtesting:block/crusher_top"
-  }
-}

@@ -1,9 +1,6 @@
 package dev.turtywurty.fabrictechmodtesting.data.provider;
 
-import dev.turtywurty.fabrictechmodtesting.common.blockentity.AlloyFurnaceBlockEntity;
-import dev.turtywurty.fabrictechmodtesting.common.blockentity.CombustionGeneratorBlockEntity;
-import dev.turtywurty.fabrictechmodtesting.common.blockentity.CrusherBlockEntity;
-import dev.turtywurty.fabrictechmodtesting.common.blockentity.SolarPanelBlockEntity;
+import dev.turtywurty.fabrictechmodtesting.common.blockentity.*;
 import dev.turtywurty.fabrictechmodtesting.core.init.BlockInit;
 import dev.turtywurty.fabrictechmodtesting.core.init.CreativeTabInit;
 import dev.turtywurty.fabrictechmodtesting.core.init.ItemInit;
@@ -38,12 +35,15 @@ public class TechModLanguageProvider extends FabricLanguageProvider {
         translationBuilder.add(BlockInit.CABLE, "Cable");
         translationBuilder.add(BlockInit.CABLE_FACADE, "Cable Facade");
         translationBuilder.add(BlockInit.SOLAR_PANEL, "Solar Panel");
+        translationBuilder.add(BlockInit.WIND_TURBINE, "Wind Turbine");
 
         // Screens
         addComponent(translationBuilder, AlloyFurnaceBlockEntity.TITLE, "Alloy Furnace");
         addComponent(translationBuilder, CrusherBlockEntity.TITLE, "Crusher");
         addComponent(translationBuilder, CombustionGeneratorBlockEntity.TITLE, "Combustion Generator");
         addComponent(translationBuilder, SolarPanelBlockEntity.TITLE, "Solar Panel");
+        addComponent(translationBuilder, BatteryBlockEntity.TITLE, "Battery");
+        addComponent(translationBuilder, WindTurbineBlockEntity.TITLE, "Wind Turbine");
 
         // Creative Tabs
         addComponent(translationBuilder, CreativeTabInit.TAB_TITLE, "Tech Mod Testing");

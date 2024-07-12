@@ -2,6 +2,7 @@ package dev.turtywurty.fabrictechmodtesting.client.screen;
 
 import dev.turtywurty.fabrictechmodtesting.FabricTechModTesting;
 import dev.turtywurty.fabrictechmodtesting.common.menu.SolarPanelMenu;
+import dev.turtywurty.fabrictechmodtesting.core.util.StringUtility;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -49,12 +50,14 @@ public class SolarPanelScreen extends AbstractContainerScreen<SolarPanelMenu> {
         renderTooltip(guiGraphics, mouseX, mouseY);
 
         if (isHovering(144, 10, 20, 66, mouseX, mouseY)) {
-            guiGraphics.renderTooltip(this.font, Component.literal("Energy: " + this.menu.getEnergy() + " / " + this.menu.getMaxEnergy()), mouseX, mouseY);
+            guiGraphics.renderTooltip(this.font, Component.literal("Energy: " +
+                    StringUtility.formatNumberWithQuantifier(this.menu.getEnergy()) + " / " +
+                    StringUtility.formatNumberWithQuantifier(this.menu.getMaxEnergy())), mouseX, mouseY);
         }
 
         if (isHovering(36, 33, 21, 21, mouseX, mouseY)) {
             List<Component> tooltip = new ArrayList<>(List.of(
-                    Component.literal("Energy Output: %d RF/t".formatted(this.menu.getEnergyOutput())),
+                    Component.literal("Energy Output: %s RF/t".formatted(StringUtility.formatNumberWithQuantifier(this.menu.getEnergyOutput()))),
                     Component.literal("Sunlight: %d%%".formatted((int) Mth.clamp(this.menu.getEnergyOutputPercent() * 100, 0, 100)))
             ));
 

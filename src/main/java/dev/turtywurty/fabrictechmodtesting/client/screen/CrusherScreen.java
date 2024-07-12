@@ -4,6 +4,7 @@ import dev.turtywurty.fabrictechmodtesting.FabricTechModTesting;
 import dev.turtywurty.fabrictechmodtesting.common.blockentity.CrusherBlockEntity;
 import dev.turtywurty.fabrictechmodtesting.common.menu.CrusherMenu;
 import dev.turtywurty.fabrictechmodtesting.common.recipe.CrusherRecipe;
+import dev.turtywurty.fabrictechmodtesting.core.util.StringUtility;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -80,7 +81,9 @@ public class CrusherScreen extends AbstractContainerScreen<CrusherMenu> implemen
         this.recipeBookComponent.renderTooltip(guiGraphics, this.leftPos, this.topPos, mouseX, mouseY);
 
         if (isHovering(144, 10, 20, 66, mouseX, mouseY)) {
-            guiGraphics.renderTooltip(this.font, Component.literal("Energy: " + this.menu.getEnergy() + " / " + this.menu.getMaxEnergy()), mouseX, mouseY);
+            guiGraphics.renderTooltip(this.font, Component.literal("Energy: " +
+                    StringUtility.formatNumberWithQuantifier(this.menu.getEnergy()) + " / " +
+                    StringUtility.formatNumberWithQuantifier(this.menu.getMaxEnergy())), mouseX, mouseY);
         }
     }
 

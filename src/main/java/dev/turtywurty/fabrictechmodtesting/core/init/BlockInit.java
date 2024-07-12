@@ -43,6 +43,9 @@ public class BlockInit {
     public static final SolarPanelBlock SOLAR_PANEL = registerWithItem("solar_panel",
             new SolarPanelBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion()));
 
+    public static final WindTurbineBlock WIND_TURBINE = registerWithItem("wind_turbine",
+            new WindTurbineBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion()));
+
     public static <T extends Block> T register(String name, T block) {
         return Registry.register(BuiltInRegistries.BLOCK, FabricTechModTesting.id(name), block);
     }

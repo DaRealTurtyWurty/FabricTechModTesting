@@ -10,10 +10,13 @@
   "block.fabrictechmodtesting.solar_panel": "Solar Panel",
   "block.fabrictechmodtesting.steel_block": "Block of Steel",
   "block.fabrictechmodtesting.ultimate_battery": "Ultimate Battery",
+  "block.fabrictechmodtesting.wind_turbine": "Wind Turbine",
   "container.fabrictechmodtesting.alloy_furnace": "Alloy Furnace",
+  "container.fabrictechmodtesting.battery": "Battery",
   "container.fabrictechmodtesting.combustion_generator": "Combustion Generator",
   "container.fabrictechmodtesting.crusher": "Crusher",
   "container.fabrictechmodtesting.solar_panel": "Solar Panel",
+  "container.fabrictechmodtesting.wind_turbine": "Wind Turbine",
   "fabrictechmodtesting:creative_tab": "Tech Mod Testing",
   "item.fabrictechmodtesting.steel_ingot": "Steel Ingot"
 }

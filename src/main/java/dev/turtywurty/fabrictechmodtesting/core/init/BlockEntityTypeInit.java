@@ -39,4 +39,7 @@ public class BlockEntityTypeInit {
 
     public static final BlockEntityType<SolarPanelBlockEntity> SOLAR_PANEL =
             register("solar_panel", SolarPanelBlockEntity::new, BlockInit.SOLAR_PANEL);
+
+    public static final BlockEntityType<WindTurbineBlockEntity> WIND_TURBINE =
+            register("wind_turbine", WindTurbineBlockEntity::new, BlockInit.WIND_TURBINE);
 }

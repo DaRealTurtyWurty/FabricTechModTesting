@@ -45,7 +45,7 @@ public interface EnergySpreader {
             }
 
             if (totalInserted < totalExtractable) {
-                thisStorage.insert(totalExtractable - totalInserted, transaction);
+                thisStorage.amount += totalExtractable - totalInserted;
             }
 
             transaction.commit();

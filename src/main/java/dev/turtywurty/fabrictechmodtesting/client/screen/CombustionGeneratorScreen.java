@@ -2,6 +2,7 @@ package dev.turtywurty.fabrictechmodtesting.client.screen;
 
 import dev.turtywurty.fabrictechmodtesting.FabricTechModTesting;
 import dev.turtywurty.fabrictechmodtesting.common.menu.CombustionGeneratorMenu;
+import dev.turtywurty.fabrictechmodtesting.core.util.StringUtility;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -39,7 +40,9 @@ public class CombustionGeneratorScreen extends AbstractContainerScreen<Combustio
         renderTooltip(guiGraphics, mouseX, mouseY);
 
         if (isHovering(144, 10, 20, 66, mouseX, mouseY)) {
-            guiGraphics.renderTooltip(this.font, Component.literal("Energy: " + this.menu.getEnergy() + " / " + this.menu.getMaxEnergy()), mouseX, mouseY);
+            guiGraphics.renderTooltip(this.font, Component.literal("Energy: " +
+                    StringUtility.formatNumberWithQuantifier(this.menu.getEnergy()) + " / " +
+                    StringUtility.formatNumberWithQuantifier(this.menu.getMaxEnergy())), mouseX, mouseY);
         }
     }
 }

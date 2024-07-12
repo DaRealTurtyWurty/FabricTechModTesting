@@ -1,6 +1,7 @@
 package dev.turtywurty.fabrictechmodtesting.common.blockentity;
 
 import dev.turtywurty.fabrictechmodtesting.FabricTechModTesting;
+import dev.turtywurty.fabrictechmodtesting.common.block.CrusherBlock;
 import dev.turtywurty.fabrictechmodtesting.common.blockentity.util.*;
 import dev.turtywurty.fabrictechmodtesting.common.menu.CrusherMenu;
 import dev.turtywurty.fabrictechmodtesting.common.recipe.CrusherRecipe;
@@ -18,6 +19,8 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -29,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.reborn.energy.api.EnergyStorage;
 
+import java.util.List;
 import java.util.Optional;
 
 public class CrusherBlockEntity extends UpdatableBlockEntity implements TickableBlockEntity, ExtendedScreenHandlerFactory {
@@ -99,12 +103,14 @@ public class CrusherBlockEntity extends UpdatableBlockEntity implements Tickable
                 update();
             }
 
+            listenForItemEntities();
             return;
         }
 
         Optional<RecipeHolder<CrusherRecipe>> currentRecipe = getCurrentRecipe();
         if (currentRecipe.isEmpty() || !currentRecipe.get().id().equals(this.currentRecipeId) || !canOutput(currentRecipe.get().value().outputA()) || !canOutput(currentRecipe.get().value().outputB())) {
             reset();
+            listenForItemEntities();
             return;
         }
 
@@ -113,8 +119,10 @@ public class CrusherBlockEntity extends UpdatableBlockEntity implements Tickable
             if (hasEnergy()) {
                 ItemStack outputA = recipe.outputA().copy();
                 ItemStack outputB = recipe.outputB().copy();
-                if (!canOutput(outputA) || !canOutput(outputB))
+                if (!canOutput(outputA) || !canOutput(outputB)) {
+                    listenForItemEntities();
                     return;
+                }
 
                 consumeEnergy();
                 this.wrappedInventoryStorage.getContainer(INPUT_SLOT).removeItem(0, recipe.input().count());
@@ -132,6 +140,28 @@ public class CrusherBlockEntity extends UpdatableBlockEntity implements Tickable
                 consumeEnergy();
                 this.progress++;
                 update();
+            }
+        }
+
+        listenForItemEntities();
+    }
+
+    private void listenForItemEntities() {
+        List<ItemEntity> entities = this.level.getEntitiesOfClass(ItemEntity.class,
+                CrusherBlock.PICKUP_AREA.move(this.worldPosition), entity -> {
+                    ItemStack stack = entity.getItem().copy();
+                    stack.setCount(1);
+                    return this.wrappedInventoryStorage.getContainer(INPUT_SLOT).canAddItem(stack);
+                });
+        if (entities.isEmpty()) return;
+
+        for (ItemEntity entity : entities) {
+            ItemStack stack = entity.getItem().copy();
+            stack = this.wrappedInventoryStorage.getContainer(INPUT_SLOT).addItem(stack);
+            if (stack.isEmpty()) {
+                entity.remove(Entity.RemovalReason.DISCARDED);
+            } else {
+                entity.setItem(stack);
             }
         }
     }
@@ -159,6 +189,10 @@ public class CrusherBlockEntity extends UpdatableBlockEntity implements Tickable
 
     public SimpleContainer getInventory() {
         return new SimpleContainer(this.wrappedInventoryStorage.getStacks().toArray(new ItemStack[0]));
+    }
+
+    public WrappedInventoryStorage<SimpleContainer> getWrappedInventoryStorage() {
+        return this.wrappedInventoryStorage;
     }
 
     private Optional<RecipeHolder<CrusherRecipe>> getCurrentRecipe() {
@@ -242,5 +276,9 @@ public class CrusherBlockEntity extends UpdatableBlockEntity implements Tickable
     @Override
     public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
         buf.writeBlockPos(this.worldPosition);
+    }
+
+    public int getProgress() {
+        return this.progress;
     }
 }
